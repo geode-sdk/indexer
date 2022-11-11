@@ -35,29 +35,13 @@ jobs:
       working-directory: ${{ github.workspace }}/index
       run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
 
-    - id: dirs
+    - name: Check
       working-directory: repo
-      run: echo "::set-output name=dirs::$(ls -d */ | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')"
-
-  check:
-    needs: initialize
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        dir: ${{ fromJson(needs.initialize.outputs.dirs) }}
-
-    steps:
-
-    - id: get-url
-      working-directory: repo
-      run: git remote get-url origin
-
-    - id: get-branch
-      working-directory: repo
-      run: git rev-parse --abbrev-ref HEAD
-
-    - if: ${{ needs.initialize.outputs.verified }} == "true"
-      run: python3 .github/publish.py ${{ matrix.dir }} $PR_AUTHOR ${{ steps.get-url.outputs.get-url }}/raw/${{ steps.get-url.outputs.get-branch }}/${{ matrix.dir }}
-      working-directory: ${{ github.workspace }}
-
+      run: |
+        for i in `ls -1`; do
+          url=`git remote get-url origin`
+          branch=`git rev-parse --abbrev-ref HEAD`
+          cd ..
+          python3 .github/publish.py ${{ matrix.dir }} $PR_AUTHOR $url/raw/$branch/$i
+          cd repo
+        done
