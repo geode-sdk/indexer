@@ -41,7 +41,7 @@ jobs:
         for i in `ls -1`; do
           url=`git remote get-url origin`
           branch=`git rev-parse --abbrev-ref HEAD`
-          cd ..
-          python3 .github/publish.py ${{ matrix.dir }} $PR_AUTHOR $url/raw/$branch/$i
-          cd repo
+          cd ../index
+          python3 ../code/.github/publish.py ${{ matrix.dir }} $PR_AUTHOR $url/raw/$branch/$i
+          cd ../repo
         done
