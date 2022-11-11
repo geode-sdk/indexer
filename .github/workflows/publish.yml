@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        repository: camila314/index-template-test
+        repository: camila314/test
         path: repo
 
     - uses: actions/checkout@v3
