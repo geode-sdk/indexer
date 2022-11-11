@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 def fail(msg):
 	print(json.dumps({"fail": msg}))
-	os._exit(1)
+	os._exit(0)
 
 def check_duplicates(mod_id, current_repo):
 	try:
