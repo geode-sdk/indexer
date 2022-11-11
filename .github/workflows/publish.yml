@@ -1,6 +1,9 @@
 name: Publish Mods
 
-on: pull_request
+on: 
+  pull_request:
+    types: [opened]
+    branches: [main]
 
 jobs:
   publish:
@@ -8,8 +11,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
 
     - name: Test
       run: echo hi
