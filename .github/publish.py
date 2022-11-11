@@ -12,10 +12,11 @@ author = sys.argv[2]
 
 url = sys.argv[3]
 repo = "/".join(Path(urlparse(url).path[1:]).parts[:2])
+config_json = json.load(open("config.json", "r"))
 
 def check_duplicates(mod_id, current_repo):
 	try:
-		repositories = json.load(open("config.json", "r"))["repos"]
+		repositories = config_json["repos"]
 
 		for repo, mods in repositories.items():
 			if repo != current_repo and mod_id in mods:
@@ -73,5 +74,10 @@ else:
 	if "logo.png" in archive_files:
 		open(out_folder / "logo.png", "wb").write(archive.read("logo.png"))
 	json.dump(entry_json, open(out_folder / "entry.json", "w"), indent=4)
+
+	the_repo = config_json["repos"].get(repo, [])
+	the_repo.append(mod_id)
+	config_json["repos"][repo] = the_repo
+	json.dump(config_json, open("config.json", "w"), indent=4)
 
 	print(f"Successfully added {mod_id}")

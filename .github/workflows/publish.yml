@@ -35,10 +35,10 @@ jobs:
       working-directory: ${{ github.workspace }}/index
       run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
 
-    - name: Check
+    - if ${{ steps.verify.outputs.verify }} == "true"
+      id: check
       working-directory: repo
       run: |
-        out=""
         for i in `ls -1d */`; do
           url=`git remote get-url origin`
           branch=`git rev-parse --abbrev-ref HEAD`
@@ -46,4 +46,9 @@ jobs:
           python3 ../code/.github/publish.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
           cd ../repo
         done
-        echo $out
+
+    - if ${{ steps.verify.outputs.verify }} == "true"
+      run: echo ${{ steps.check.outputs.check }}
+      #uses: mshick/add-pr-comment@v2
+      #with:
+      #  message: ${{ steps.check.outputs.check }}
