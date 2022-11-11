@@ -32,8 +32,8 @@ jobs:
         python-version: '3.10' 
 
     - id: verify
-      working-directory: ${{ github.workspace }}
-      run: python3 code/.github/verify.py $PR_AUTHOR
+      working-directory: ${{ github.workspace }}/index
+      run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
 
     - id: dirs
       working-directory: repo
