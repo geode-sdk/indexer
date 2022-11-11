@@ -35,8 +35,7 @@ jobs:
       working-directory: ${{ github.workspace }}/index
       run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
 
-    - if ${{ steps.verify.outputs.verify }} == "true"
-      name: Check
+    - if: ${{ steps.verify.outputs.verify }} == "true"
       id: check
       working-directory: repo
       run: |
