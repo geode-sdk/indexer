@@ -55,14 +55,14 @@ try:
 		"categories": mod_json.get("categories", []),
 		"platforms": platforms,
 		"mod": {
-			"download": url + "/mod.geode",
+			"download": url + "mod.geode",
 			"hash": hashlib.sha3_256(open(geode_file, "rb").read()).hexdigest()
 		}
 	}
 
 	if api_file.exists():
 		entry_json["api"] = {
-			"download": url + "/api.zip",
+			"download": url + "api.zip",
 			"hash": hashlib.sha3_256(open(api_zip, "rb").read()).hexdigest()
 		}
 except:

@@ -39,7 +39,7 @@ jobs:
       working-directory: repo
       run: |
         out=""
-        for i in `ls -1`; do
+        for i in `ls -1d */`; do
           url=`git remote get-url origin`
           branch=`git rev-parse --abbrev-ref HEAD`
           cd ../index
