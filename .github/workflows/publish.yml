@@ -1,16 +1,37 @@
 name: Publish Mods
 
-on: 
-  pull_request:
-    types: [opened]
-    branches: [main]
+on: workflow_dispatch
 
 jobs:
-  publish:
+  initialize:
     runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
 
     steps:
     - uses: actions/checkout@v3
+      repository: camila314/index-template-test
+      path: repo
 
-    - name: Test
-      run: echo hi
+    - uses: actions/checkout@v3
+      path: main
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+
+    - id: dirs
+      working-directory: repo
+      run: echo "::set-output name=dirs::$(ls -d */ | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')"
+
+  check:
+    needs: initialize
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dir: ${{ fromJson(needs.initialize.outputs.dirs) }}
+
+    steps:
+
+    - run: echo ${{ matrix.dir }}
