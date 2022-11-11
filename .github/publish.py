@@ -3,10 +3,9 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 def fail(msg):
-	print(json.dumps({"fail": msg}))
-	print("ERROR")
-	#os._exit(1)
-	exit()
+	print(msg)
+	sys.stdout.flush()
+	os._exit(0)
 
 def check_duplicates(mod_id, current_repo):
 	try:
@@ -76,4 +75,4 @@ else:
 		open(out_folder / "logo.png", "wb").write(archive.read("logo.png"))
 	json.dump(entry_json, open(out_folder / "entry.json", "w"), indent=4)
 
-print({"success": "Updated index successfully"})
+	print(f"Successfully added {mod_id}")
