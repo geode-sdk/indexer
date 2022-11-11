@@ -47,7 +47,7 @@ jobs:
           cd ../repo
         done
 
-    - if ${{ steps.verify.outputs.verify }} == "true"
+    - if: ${{ steps.verify.outputs.verify }} == "true"
       run: echo ${{ steps.check.outputs.check }}
       #uses: mshick/add-pr-comment@v2
       #with:
