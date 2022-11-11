@@ -2,6 +2,9 @@ import sys, os, json, zipfile, hashlib
 from pathlib import Path
 from urllib.parse import urlparse
 
+print("Holy Balls!")
+exit()
+
 def fail(msg):
 	print(json.dumps({"fail": msg}))
 	print("ERROR")
