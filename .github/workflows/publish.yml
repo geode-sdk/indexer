@@ -46,7 +46,6 @@ jobs:
           python3 ../code/.github/publish.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
           cd ../repo
         done
-        echo a
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       run: echo ${{ steps.check.outputs.check }}
@@ -54,11 +53,11 @@ jobs:
       #with:
       #  message: ${{ steps.check.outputs.check }}
 
-      - name: Commit, push to index
-        working-directory: ${{ github.workspace }}/index
-        run: |
-          git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
-          git config --local user.name "GeodeBot"
-          git add -A
-          git commit -m "Update from $PR_AUTHOR"
-          git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/index-test.git"
+    - name: Commit, push to index
+      working-directory: ${{ github.workspace }}/index
+      run: |
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
+        git add -A
+        git commit -m "Update from $PR_AUTHOR"
+        git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/index-test.git"
