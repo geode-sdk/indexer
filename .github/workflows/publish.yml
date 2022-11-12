@@ -52,3 +52,7 @@ jobs:
       #uses: mshick/add-pr-comment@v2
       #with:
       #  message: ${{ steps.check.outputs.check }}
+
+    - uses: EndBug/add-and-commit@v9
+      with:
+        cwd: ${{ github.workspace }}/index
