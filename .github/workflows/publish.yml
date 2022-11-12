@@ -52,7 +52,6 @@ jobs:
       #uses: mshick/add-pr-comment@v2
       #with:
       #  message: ${{ steps.check.outputs.check }}
-
     - name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
