@@ -53,6 +53,11 @@ jobs:
       #with:
       #  message: ${{ steps.check.outputs.check }}
 
-    - uses: EndBug/add-and-commit@v9
-      with:
-        cwd: ${{ github.workspace }}/index
+      - name: Commit, push to index
+        working-directory: ${{ github.workspace }}/index
+        run: |
+          git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+          git config --local user.name "GeodeBot"
+          git add -A
+          git commit -m "Update from $PR_AUTHOR"
+          git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/index-test.git"
