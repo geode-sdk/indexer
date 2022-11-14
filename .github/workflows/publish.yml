@@ -39,8 +39,6 @@ jobs:
     - if: ${{ steps.verify.outputs.verify }} == "true"
       id: check
       working-directory: repo
-      outputs:
-        message: ${{ steps.check.outputs.out-message }}
       run: |
         url=`git remote get-url origin`
         branch=`git rev-parse --abbrev-ref HEAD`
@@ -48,7 +46,7 @@ jobs:
         cd ../index
         python3 ../code/.github/reset-repo.py $url
 
-        echo "::set-output name=out-message::$(for i in $dirs; do
+        echo "::set-output name=message::$(for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
         done)
 
