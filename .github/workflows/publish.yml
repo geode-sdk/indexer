@@ -1,6 +1,6 @@
 name: Publish Mods
 
-on: pull_request
+on: pull_request_target
 
 env:
   PR_AUTHOR: ${{ github.event.pull_request.user.login }}
