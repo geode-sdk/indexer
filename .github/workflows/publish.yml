@@ -42,6 +42,7 @@ jobs:
       run: |
         url=`git remote get-url origin`
         branch=`git rev-parse --abbrev-ref HEAD`
+        ls
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
