@@ -42,9 +42,10 @@ jobs:
       run: |
         url=`git remote get-url origin`
         branch=`git rev-parse --abbrev-ref HEAD`
+        dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
-        for i in `ls -1d */`; do
+        for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
         done
 
