@@ -51,11 +51,11 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
 
+    - if: ${{ steps.verify.outputs.verify }} == "false"
+      run: echo "MESSAGE<<EOF Unverified requests have not been implemented yet EOF" >> $GITHUB_ENV
+
     - if: ${{ steps.verify.outputs.verify }} == "true"
-      uses: mshick/add-pr-comment@v2
-      with:
-        message: ${{ env.MESSAGE }}
-    - name: Commit, push to index
+      name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
@@ -63,4 +63,8 @@ jobs:
         git add -A
         git commit -m "Update from $PR_AUTHOR"
         git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/index-test.git"
-        git push -u origin main
+        git push -u origin main || true
+
+    - uses: superbrothers/close-pull-request@v3
+      with:
+        comment: ${{ env.MESSAGE }}
