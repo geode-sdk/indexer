@@ -45,7 +45,7 @@ jobs:
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
-        echo -n "MESSAGE<<EOF" >> $GITHUB_ENV
+        echo "MESSAGE<<EOF" >> $GITHUB_ENV
         for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
         done
