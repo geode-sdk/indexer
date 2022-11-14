@@ -1,9 +1,9 @@
 name: Publish Mods
 
-on: workflow_dispatch
+on: pull_request
 
 env:
-  PR_AUTHOR: camila314 # {{ github.event.pull_request.user.login }} 
+  PR_AUTHOR: ${{ github.event.pull_request.user.login }} 
 
 jobs:
   initialize:
@@ -13,6 +13,12 @@ jobs:
       verified: ${{ steps.verify.outputs.verify }}
 
     steps:
+    - uses: kceb/pull-request-url-action@v1
+      id: pr-url
+
+    - run: |
+      echo "${{ steps.pr-url.outputs.url }}"
+      python3 usheogsoeirgjois
     - uses: actions/checkout@v3
       with:
         repository: camila314/test
