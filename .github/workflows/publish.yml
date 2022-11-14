@@ -46,9 +46,9 @@ jobs:
         cd ../index
         python3 ../code/.github/reset-repo.py $url
 
-        echo "::set-output name=message::$(for i in $dirs; do
+        echo "message=\"$(for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
-        done)"
+        done)\"" >> $GITHUB_OUTPUT
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       uses: mshick/add-pr-comment@v2
