@@ -51,10 +51,9 @@ jobs:
         done)"
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
-      run: echo ${{ steps.check.outputs.message }}
-      #uses: mshick/add-pr-comment@v2
-      #with:
-      #  message: ${{ steps.check.outputs.check }}
+      uses: mshick/add-pr-comment@v2
+      with:
+        message: ${{ steps.check.outputs.message }}
     - name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
