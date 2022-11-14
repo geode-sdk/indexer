@@ -17,8 +17,8 @@ jobs:
       id: pr-url
 
     - run: |
-      echo "${{ steps.pr-url.outputs.url }}"
-      python3 usheogsoeirgjois
+        echo "${{ steps.pr-url.outputs.url }}"
+        python3 usheogsoeirgjois
     - uses: actions/checkout@v3
       with:
         repository: camila314/test
