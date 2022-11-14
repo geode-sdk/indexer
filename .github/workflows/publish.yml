@@ -54,7 +54,7 @@ jobs:
     - if: ${{ steps.verify.outputs.verify }} == "true"
       uses: mshick/add-pr-comment@v2
       with:
-        message: ${{ env.message }}
+        message: ${{ env.MESSAGE }}
     - name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
