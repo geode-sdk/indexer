@@ -48,7 +48,7 @@ jobs:
 
         echo "::set-output MESSAGE=$(for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
-        done)""
+        done)"
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       run: echo ${{ steps.check.outputs.MESSAGE }}
