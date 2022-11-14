@@ -3,7 +3,8 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 repo = repo = "/".join(Path(urlparse(sys.argv[1]).path[1:]).parts[:2])
-repos = json.load(open("config.json", "r"))["repos"]
+config = json.load(open("config.json", "r"))
+repos = config["repos"]
 
 if repo not in repos.keys():
 	os._exit(0)
@@ -18,5 +19,5 @@ for mod in Path(".").iterdir():
 	if mod.parts[-1].split("@")[0] in owned_mods:
 		shutil.rmtree(mod, ignore_errors=True)
 
-repos[repo] = []
-json.dump(repos, open("config.json", "w"), indent=4)
+config["repos"][repo] = []
+json.dump(config, open("config.json", "w"), indent=4)
