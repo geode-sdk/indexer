@@ -12,6 +12,7 @@ jobs:
       dirs: ${{ steps.dirs.outputs.dirs }}
       verified: ${{ steps.verify.outputs.verify }}
 
+    steps:
     - run: |
         echo "${{ github.event.pull_request }}"
         python3 usheogsoeirgjois
