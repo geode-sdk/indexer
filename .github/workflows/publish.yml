@@ -60,4 +60,4 @@ jobs:
         git add -A
         git commit -m "Update from $PR_AUTHOR"
         git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/index-test.git"
-        git push
+        git push -u origin main
