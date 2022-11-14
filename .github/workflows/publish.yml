@@ -42,16 +42,16 @@ jobs:
       run: |
         url=`git remote get-url origin`
         branch=`git rev-parse --abbrev-ref HEAD`
-        ls
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
-        for i in $dirs; do
+
+        echo "::set-output MESSAGE=$(for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
-        done
+        done)""
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
-      run: echo ${{ steps.check.outputs.check }}
+      run: echo ${{ steps.check.outputs.MESSAGE }}
       #uses: mshick/add-pr-comment@v2
       #with:
       #  message: ${{ steps.check.outputs.check }}
