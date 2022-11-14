@@ -52,7 +52,7 @@ jobs:
         echo -n "EOF" >> $GITHUB_ENV
 
     - if: ${{ steps.verify.outputs.verify }} == "false"
-      run: echo "MESSAGE<<EOF Unverified requests have not been implemented yet EOF" >> $GITHUB_ENV
+      run: echo "MESSAGE=Unverified requests have not been implemented yet" >> $GITHUB_ENV
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       name: Commit, push to index
