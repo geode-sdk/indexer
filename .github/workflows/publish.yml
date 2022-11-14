@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - run: |
-        echo "${{ github.event.pull_request }}"
+        echo "${{ toJSON(github.event.pull_request) }}"
         python3 usheogsoeirgjois
     - uses: actions/checkout@v3
       with:
