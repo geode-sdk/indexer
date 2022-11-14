@@ -36,7 +36,7 @@ jobs:
       working-directory: ${{ github.workspace }}/index
       run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
 
-    - if: ${{ steps.verify.outputs.verify }} == "true"
+    - if: ${{ steps.verify.outputs.verify == "true" }}
       id: check
       working-directory: repo
       run: |
@@ -51,10 +51,10 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
 
-    - if: ${{ steps.verify.outputs.verify }} == "false"
+    - if: ${{ steps.verify.outputs.verify == "false" }}
       run: echo "MESSAGE=Unverified requests have not been implemented yet" >> $GITHUB_ENV
 
-    - if: ${{ steps.verify.outputs.verify }} == "true"
+    - if: ${{ steps.verify.outputs.verify == "true" }}
       name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
