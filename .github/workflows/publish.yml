@@ -1,9 +1,9 @@
 name: Publish Mods
 
-on: pull_request
+on: pull_request_target
 
 env:
-  PR_AUTHOR: ${{ github.event.pull_request.user.login }} 
+  PR_AUTHOR: ${{ github.event.pull_request.user.login }}
 
 jobs:
   initialize:
@@ -13,15 +13,9 @@ jobs:
       verified: ${{ steps.verify.outputs.verify }}
 
     steps:
-    - uses: kceb/pull-request-url-action@v1
-      id: pr-url
-
-    - run: |
-      echo "${{ steps.pr-url.outputs.url }}"
-      python3 usheogsoeirgjois
     - uses: actions/checkout@v3
       with:
-        repository: camila314/test
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
         path: repo
 
     - uses: actions/checkout@v3
@@ -51,15 +45,16 @@ jobs:
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
+        echo "MESSAGE<<EOF" >> $GITHUB_ENV
         for i in $dirs; do
-          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
+          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
         done
+        echo -n "EOF" >> $GITHUB_ENV
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
-      run: echo ${{ steps.check.outputs.check }}
-      #uses: mshick/add-pr-comment@v2
-      #with:
-      #  message: ${{ steps.check.outputs.check }}
+      uses: mshick/add-pr-comment@v2
+      with:
+        message: ${{ env.MESSAGE }}
     - name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
