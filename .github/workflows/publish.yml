@@ -45,16 +45,16 @@ jobs:
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
-        echo -n "message='" >> $GITHUB_OUTPUT
+        echo -n "MESSAGE<<EOF" >> $GITHUB_ENV
         for i in $dirs; do
-          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_OUTPUT
+          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
         done
-        echo -n "'" >> $GITHUB_OUTPUT
+        echo -n "EOF" >> $GITHUB_OUTPUT
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       uses: mshick/add-pr-comment@v2
       with:
-        message: ${{ steps.check.outputs.message }}
+        message: ${{ env.message }}
     - name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
