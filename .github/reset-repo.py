@@ -1,5 +1,6 @@
 import sys, os, shutil, json
 from pathlib import Path
+from urllib.parse import urlparse
 
 repo = repo = "/".join(Path(urlparse(sys.argv[1]).path[1:]).parts[:2])
 repos = json.load(open("config.json", "r"))["repos"]
