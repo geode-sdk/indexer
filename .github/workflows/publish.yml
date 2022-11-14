@@ -12,12 +12,8 @@ jobs:
       dirs: ${{ steps.dirs.outputs.dirs }}
       verified: ${{ steps.verify.outputs.verify }}
 
-    steps:
-    - uses: kceb/pull-request-url-action@v1
-      id: pr-url
-
     - run: |
-        echo "${{ steps.pr-url.outputs.url }}"
+        echo "${{ github.event.pull_request }}"
         python3 usheogsoeirgjois
     - uses: actions/checkout@v3
       with:
