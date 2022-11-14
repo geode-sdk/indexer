@@ -49,7 +49,7 @@ jobs:
         for i in $dirs; do
           python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
         done
-        echo -n "EOF" >> $GITHUB_OUTPUT
+        echo -n "EOF" >> $GITHUB_ENV
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
       uses: mshick/add-pr-comment@v2
