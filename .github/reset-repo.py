@@ -11,7 +11,7 @@ if repo not in repos.keys():
 
 owned_mods = repos[repo]
 
-for mod in Path(".").iter_dir():
+for mod in Path(".").iterdir():
 	if not mod.is_dir():
 		continue
 
