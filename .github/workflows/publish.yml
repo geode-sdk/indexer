@@ -40,12 +40,12 @@ jobs:
       id: check
       working-directory: repo
       run: |
+        url=`git remote get-url origin`
+        branch=`git rev-parse --abbrev-ref HEAD`
+        cd ../index
+        python3 ../code/.github/reset-repo.py $url
         for i in `ls -1d */`; do
-          url=`git remote get-url origin`
-          branch=`git rev-parse --abbrev-ref HEAD`
-          cd ../index
-          python3 ../code/.github/publish.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
-          cd ../repo
+          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i
         done
 
     - if: ${{ steps.verify.outputs.verify }} == "true"
