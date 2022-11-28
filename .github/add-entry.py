@@ -73,7 +73,7 @@ else:
 	if "logo.png" in archive_files:
 		open(out_folder / "logo.png", "wb").write(archive.read("logo.png"))
 	json.dump(entry_json, open(out_folder / "entry.json", "w"), indent=4)
-	open(out_folder / "mod.json", "w").write(mod_json_plaintext)
+	open(out_folder / "mod.json", "wb").write(mod_json_plaintext)
 
 	the_repo = config_json["repos"].get(repo, [])
 	the_repo.append(mod_id)
