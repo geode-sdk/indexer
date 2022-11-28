@@ -1,2 +1,2 @@
 # index-template-test
-Testing it out!
+Testing it out2
