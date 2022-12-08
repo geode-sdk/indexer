@@ -67,7 +67,7 @@ except:
 	fail(folder, "Corrupted mod")
 else:
 	major_version = mod_json["version"].replace("v", "").split(".")[0]
-	out_folder = Path(mod_id + "@" + major_version)
+	out_folder = Path("mods") / Path(mod_id + "@" + major_version)
 	out_folder.mkdir(exist_ok=True)
 
 	if "logo.png" in archive_files:
