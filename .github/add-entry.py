@@ -55,7 +55,8 @@ try:
 		"mod": {
 			"download": url + "mod.geode",
 			"hash": hashlib.sha3_256(open(geode_file, "rb").read()).hexdigest()
-		}
+		},
+		"tags": mod_json.get("tags", [])
 	}
 
 	if api_file.exists():
@@ -72,6 +73,9 @@ else:
 
 	if "logo.png" in archive_files:
 		open(out_folder / "logo.png", "wb").write(archive.read("logo.png"))
+	if "about.md" in archive_files:
+		open(out_folder / "about.md", "wb").write(archive.read("about.md"))
+		
 	json.dump(entry_json, open(out_folder / "entry.json", "w"), indent=4)
 	open(out_folder / "mod.json", "wb").write(mod_json_plaintext)
 
