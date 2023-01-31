@@ -32,7 +32,8 @@ if not geode_file.exists():
 
 try:
 	archive = zipfile.ZipFile(geode_file, "r")
-	mod_json = json.loads(archive.read("mod.json"))
+	mod_json_plaintext = archive.read("mod.json")
+	mod_json = json.loads(mod_json_plaintext)
 	archive_files = archive.namelist()
 
 	mod_id = mod_json["id"]
@@ -50,13 +51,12 @@ try:
 
 	entry_json = {
 		"commit-author": author,
-		"version": mod_json["version"],
-		"categories": mod_json.get("categories", []),
 		"platforms": platforms,
 		"mod": {
 			"download": url + "mod.geode",
 			"hash": hashlib.sha3_256(open(geode_file, "rb").read()).hexdigest()
-		}
+		},
+		"tags": mod_json.get("tags", [])
 	}
 
 	if api_file.exists():
@@ -68,12 +68,16 @@ except:
 	fail(folder, "Corrupted mod")
 else:
 	major_version = mod_json["version"].replace("v", "").split(".")[0]
-	out_folder = Path(mod_id + "@" + major_version)
+	out_folder = Path("mods") / Path(mod_id + "@" + major_version)
 	out_folder.mkdir(exist_ok=True)
 
 	if "logo.png" in archive_files:
 		open(out_folder / "logo.png", "wb").write(archive.read("logo.png"))
+	if "about.md" in archive_files:
+		open(out_folder / "about.md", "wb").write(archive.read("about.md"))
+		
 	json.dump(entry_json, open(out_folder / "entry.json", "w"), indent=4)
+	open(out_folder / "mod.json", "wb").write(mod_json_plaintext)
 
 	the_repo = config_json["repos"].get(repo, [])
 	the_repo.append(mod_id)

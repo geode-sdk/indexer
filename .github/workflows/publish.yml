@@ -24,7 +24,7 @@ jobs:
 
     - uses: actions/checkout@v3
       with:
-        repository: geode-sdk/index-test
+        repository: geode-sdk/mods
         path: index
         token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
@@ -34,9 +34,9 @@ jobs:
 
     - id: verify
       working-directory: ${{ github.workspace }}/index
-      run: python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR
+      run: echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR` >> $GITHUB_ENV
 
-    - if: ${{ steps.verify.outputs.verify }} == "true"
+    - if: ${{ env.VERIFY == 'true' }}
       id: check
       working-directory: repo
       run: |
@@ -51,11 +51,11 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
 
-    - if: ${{ steps.verify.outputs.verify }} == "true"
-      uses: mshick/add-pr-comment@v2
-      with:
-        message: ${{ env.MESSAGE }}
-    - name: Commit, push to index
+    - if: ${{ env.VERIFY == 'false' }}
+      run: echo "MESSAGE=Unverified requests have not been implemented yet" >> $GITHUB_ENV
+
+    - if: ${{ env.VERIFY == 'true' }}
+      name: Commit, push to index
       working-directory: ${{ github.workspace }}/index
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
@@ -63,4 +63,8 @@ jobs:
         git add -A
         git commit -m "Update from $PR_AUTHOR"
         git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/index-test.git"
-        git push -u origin main
+        git push -u origin main || true
+
+    - uses: superbrothers/close-pull-request@v3
+      with:
+        comment: ${{ env.MESSAGE }}
