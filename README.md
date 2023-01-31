@@ -1,2 +1,3 @@
-# index-template-test
-Testing it out!
+# Geode Indexer
+
+This repository is the Geode Mod Indexer.
