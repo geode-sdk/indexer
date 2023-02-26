@@ -1,3 +1,3 @@
 # Geode Indexer
 
-This repository is the Geode Mod Indexer.
+This repository is used to add my mods to the Geode mods index
