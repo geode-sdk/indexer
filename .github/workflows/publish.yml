@@ -52,7 +52,11 @@ jobs:
         echo -n "EOF" >> $GITHUB_ENV
 
     - if: ${{ env.VERIFY == 'false' }}
-      run: echo "MESSAGE=Unverified requests have not been implemented yet" >> $GITHUB_ENV
+      name: Comment PR
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Waiting for a verified user to comment "@accept" to accept, or "@reject" to reject the entry.
 
     - if: ${{ env.VERIFY == 'true' }}
       name: Commit, push to index
