@@ -33,17 +33,25 @@ jobs:
         # reaction: rocket
       env:
         GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-          
-    - uses: actions/checkout@v3
+        
+    - name: Get PR number
+      uses: jmatsu/detect-issue-comment-to-pr-action@v1.0
+      id: detect_pr
+      env:
+        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+        
+    - name: Checkout PR
+      uses: dawidd6/action-checkout-pr@v1
       with:
-        repository: ${{ github.event.pull_request.head.repo.full_name }}
-        path: repo
-
-    - uses: actions/checkout@v3
+        pr: ${{ steps.detect_pr.outputs.pull_number }}
+        
+    - name: Checkout Indexer
+      uses: actions/checkout@v3
       with:
         path: code
 
-    - uses: actions/checkout@v3
+    - name: Checkout Index
+      uses: actions/checkout@v3
       with:
         repository: geode-sdk/mods
         path: index
