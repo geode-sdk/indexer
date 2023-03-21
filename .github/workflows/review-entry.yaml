@@ -34,17 +34,14 @@ jobs:
       env:
         GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
         
-    - name: Get PR number
-      uses: jmatsu/detect-issue-comment-to-pr-action@v1.0
-      id: detect_pr
-      env:
-        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-        
+    - uses: 8BitJonny/gh-get-current-pr@2.2.0
+      id: PR
+
     - name: Checkout PR
-      uses: dawidd6/action-checkout-pr@v1
+      uses: actions/checkout@v3
       with:
+        repository: ${{ steps.PR.head.repo.full_name }}
         path: repo
-        pr: ${{ steps.detect_pr.outputs.pull_number }}
         
     - name: Checkout Indexer
       uses: actions/checkout@v3
