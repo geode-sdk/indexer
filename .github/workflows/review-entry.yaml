@@ -1,13 +1,11 @@
 name: Review Entry
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
 
 env:
-  PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+  PR_AUTHOR: ${{ github.event.issue.user.login }}
   COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
 
 jobs:
@@ -18,10 +16,6 @@ jobs:
       verified: ${{ steps.verify.outputs.verify }}
 
     steps:
-    - if: ${{ env.PR_AUTHOR == '' }}
-      run: |
-        echo PR_AUTHOR=`${{ github.event.issue.user.login }}` >> $GITHUB_ENV
-    
     - uses: khan/pull-request-comment-trigger@v1.1.0
       id: check_accept
       with:
@@ -67,6 +61,7 @@ jobs:
     - if: ${{ env.VERIFY == 'true' }} && steps.check_accept.outputs.triggered == 'true'
       id: check
       working-directory: repo
+      shell: bash
       run: |
         url=`git remote get-url origin`
         branch=`git rev-parse --abbrev-ref HEAD`
@@ -86,6 +81,7 @@ jobs:
 
     - if: ${{ env.VERIFY == 'true' }} && steps.check_accept.outputs.triggered == 'true'
       name: Commit, push to index
+      shell: bash
       working-directory: ${{ github.workspace }}/index
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
