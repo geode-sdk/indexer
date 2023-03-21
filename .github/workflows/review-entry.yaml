@@ -79,7 +79,7 @@ jobs:
       run: |
         echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py $COMMENT_AUTHOR` >> $GITHUB_ENV
 
-    - if: ${{ env.VERIFY == 'true' }} && steps.check_accept.outputs.triggered == 'true'
+    - if: ${{ env.VERIFY == 'true' }} && ${{ steps.check_accept.outputs.triggered == 'true' }}
       id: check
       working-directory: repo
       shell: bash
@@ -95,12 +95,14 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
         
-    - if: ${{ env.VERIFY == 'true' }}  && steps.check_reject.outputs.triggered == 'true'
-      uses: superbrothers/close-pull-request@v3
+    - if: ${{ env.VERIFY == 'true' }} && ${{ steps.check_reject.outputs.triggered == 'true' }}
+      name: Close PR
+      uses: peter-evans/close-pull@v2
       with:
+        pull-request-number: ${{ github.event.issue.number }}
         comment: ${{ env.MESSAGE }}
 
-    - if: ${{ env.VERIFY == 'true' }} && steps.check_accept.outputs.triggered == 'true'
+    - if: ${{ env.VERIFY == 'true' }} && ${{ steps.check_accept.outputs.triggered == 'true' }}
       name: Commit, push to index
       shell: bash
       working-directory: ${{ github.workspace }}/index
