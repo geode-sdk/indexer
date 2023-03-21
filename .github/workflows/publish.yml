@@ -65,6 +65,3 @@ jobs:
         git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
         git push -u origin main || true
 
-    - uses: superbrothers/close-pull-request@v3
-      with:
-        comment: ${{ env.MESSAGE }}
