@@ -43,6 +43,7 @@ jobs:
     - name: Checkout PR
       uses: dawidd6/action-checkout-pr@v1
       with:
+        path: repo
         pr: ${{ steps.detect_pr.outputs.pull_number }}
         
     - name: Checkout Indexer
