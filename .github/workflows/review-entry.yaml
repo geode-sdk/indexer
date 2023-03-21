@@ -43,7 +43,7 @@ jobs:
       name: Checkout PR
       uses: actions/checkout@v3
       with:
-        repository: ${{ steps.PR.outputs.pr.head.repo.full_name }}
+        repository: ${{ fromJSON(steps.PR.outputs.pr).head.repo.full_name }}
         path: repo
         
     - name: Checkout Indexer
