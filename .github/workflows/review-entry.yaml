@@ -21,6 +21,7 @@ jobs:
     - uses: khan/pull-request-comment-trigger@v1.1.0
       id: check_accept
       with:
+        prefix_only: true
         trigger: '@accept'
         reaction: rocket
       env:
@@ -29,6 +30,7 @@ jobs:
     - uses: khan/pull-request-comment-trigger@v1.1.0
       id: check_reject
       with:
+        prefix_only: true
         trigger: '@reject'
         reaction: rocket
       env:
