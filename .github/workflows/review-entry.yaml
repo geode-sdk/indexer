@@ -36,11 +36,14 @@ jobs:
         
     - uses: 8BitJonny/gh-get-current-pr@2.2.0
       id: PR
+      
+    - run: echo "Your PR number is ${{ steps.PR.outputs.number }} and its JSON is ${{ steps.PR.outputs.pr }} and outputs are ${{ steps.PR.outputs }}"
 
-    - name: Checkout PR
+    - if: steps.PR.outputs.pr_found == 'true'
+      name: Checkout PR
       uses: actions/checkout@v3
       with:
-        repository: ${{ steps.PR.head.repo.full_name }}
+        repository: ${{ steps.PR.outputs.pr.head.repo.full_name }}
         path: repo
         
     - name: Checkout Indexer
