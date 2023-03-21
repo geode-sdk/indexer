@@ -23,7 +23,7 @@ jobs:
       with:
         prefix_only: true
         trigger: '@accept'
-        reaction: rocket
+        # reaction: rocket
       env:
         GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
           
@@ -32,7 +32,7 @@ jobs:
       with:
         prefix_only: true
         trigger: '@reject'
-        reaction: rocket
+        # reaction: rocket
       env:
         GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
           
