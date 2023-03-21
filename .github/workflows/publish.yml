@@ -36,36 +36,36 @@ jobs:
       working-directory: ${{ github.workspace }}/index
       run: echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py $PR_AUTHOR` >> $GITHUB_ENV
 
-    - if: ${{ env.VERIFY == 'true' }}
-      id: check
-      working-directory: repo
-      run: |
-        url=`git remote get-url origin`
-        branch=`git rev-parse --abbrev-ref HEAD`
-        dirs=`ls -1d */`
-        cd ../index
-        python3 ../code/.github/reset-repo.py $url
-        echo "MESSAGE<<EOF" >> $GITHUB_ENV
-        for i in $dirs; do
-          python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
-        done
-        echo -n "EOF" >> $GITHUB_ENV
+    # - if: ${{ env.VERIFY == 'true' }}
+    #   id: check
+    #   working-directory: repo
+    #   run: |
+    #     url=`git remote get-url origin`
+    #     branch=`git rev-parse --abbrev-ref HEAD`
+    #     dirs=`ls -1d */`
+    #     cd ../index
+    #     python3 ../code/.github/reset-repo.py $url
+    #     echo "MESSAGE<<EOF" >> $GITHUB_ENV
+    #     for i in $dirs; do
+    #       python3 ../code/.github/add-entry.py ../repo/$i $PR_AUTHOR $url/raw/$branch/$i >> $GITHUB_ENV
+    #     done
+    #     echo -n "EOF" >> $GITHUB_ENV
 
-    - if: ${{ env.VERIFY == 'false' }}
-      name: Comment PR
+    # - if: ${{ env.VERIFY == 'false' }}
+    - name: Comment PR
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
           Waiting for a verified user to comment "@accept" to accept, or "@reject" to reject the entry.
 
-    - if: ${{ env.VERIFY == 'true' }}
-      name: Commit, push to index
-      working-directory: ${{ github.workspace }}/index
-      run: |
-        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
-        git config --local user.name "GeodeBot"
-        git add -A
-        git commit -m "Update from $PR_AUTHOR"
-        git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
-        git push -u origin main || true
+    # - if: ${{ env.VERIFY == 'true' }}
+    #   name: Commit, push to index
+    #   working-directory: ${{ github.workspace }}/index
+    #   run: |
+    #     git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+    #     git config --local user.name "GeodeBot"
+    #     git add -A
+    #     git commit -m "Update from $PR_AUTHOR"
+    #     git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+    #     git push -u origin main || true
 
