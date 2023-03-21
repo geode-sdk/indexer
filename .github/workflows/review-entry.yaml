@@ -19,20 +19,20 @@ jobs:
 
     steps:
     - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check_accept
-        with:
-          trigger: '@accept'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+      id: check_accept
+      with:
+        trigger: '@accept'
+        reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
           
     - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check_reject
-        with:
-          trigger: '@reject'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+      id: check_reject
+      with:
+        trigger: '@reject'
+        reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
           
     - uses: actions/checkout@v3
       with:
