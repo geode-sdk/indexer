@@ -1,6 +1,7 @@
 # Geode Indexer
 
-This repository is the Geode Mod Indexer. In order to add your mods to the Geode Index, you will need to use this repository.
+This repository is for the Geode Mod Indexer. \
+This is a streamlined way of adding mods to the Geode Index, by having them be hosted on GitHub.
 
 ## How to add mods  
 * Fork this repository.  
