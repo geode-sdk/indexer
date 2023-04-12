@@ -95,7 +95,7 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
         
-    - if: ${{ env.VERIFY == 'true' && steps.check_reject.outputs.triggered == 'true'}}
+    - if: ${{ env.VERIFY == 'true' && (steps.check_reject.outputs.triggered == 'true' || steps.check_accept.outputs.triggered == 'true')}}
       name: Close PR
       uses: peter-evans/close-pull@v2
       with:
