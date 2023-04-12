@@ -85,7 +85,7 @@ jobs:
       shell: bash
       run: |
         url=`git remote get-url origin`
-        branch=`git rev-parse --abbrev-ref HEAD`
+        branch=`git rev-parse HEAD`
         dirs=`ls -1d */`
         cd ../index
         python3 ../code/.github/reset-repo.py $url
@@ -95,7 +95,7 @@ jobs:
         done
         echo -n "EOF" >> $GITHUB_ENV
         
-    - if: ${{ env.VERIFY == 'true' && steps.check_reject.outputs.triggered == 'true'}}
+    - if: ${{ env.VERIFY == 'true' && (steps.check_reject.outputs.triggered == 'true' || steps.check_accept.outputs.triggered == 'true')}}
       name: Close PR
       uses: peter-evans/close-pull@v2
       with:
