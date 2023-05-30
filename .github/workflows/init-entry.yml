@@ -1,0 +1,14 @@
+name: Initialize entry
+
+on: pull_request_target
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Comment PR
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Waiting for a verified user to comment "!accept" to accept, or "!reject" to reject the entry.
+
