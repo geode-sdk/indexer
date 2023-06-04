@@ -1,0 +1,17 @@
+name: Add entry new
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  issue_commented:
+    name: Issue test
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "A comment on issue $NUMBER: '$BODY'"
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
