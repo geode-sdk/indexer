@@ -2,7 +2,7 @@ name: Add an entry
 description: Add an entry to the Geode index.
 labels: []
 body: 
-  - type: textarea
+  - type: input
     id: entry
     attributes:
       label: Your mod link
