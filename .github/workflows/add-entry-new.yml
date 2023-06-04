@@ -15,3 +15,9 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
           BODY: ${{ github.event.issue.body }}
+      
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: Did stuff
