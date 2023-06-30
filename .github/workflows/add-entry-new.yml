@@ -1,0 +1,23 @@
+name: Add entry new
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  issue_commented:
+    name: Issue test
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "A comment on issue $NUMBER: '$BODY'"
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+      
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: Did stuff
