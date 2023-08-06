@@ -102,7 +102,8 @@ try:
 	else:
 		config_versions = []
 
-	config_versions.append(mod_version)
+	if mod_version not in config_versions:
+		config_versions.append(mod_version)
 
 	config_entry['versions'] = config_versions
 
