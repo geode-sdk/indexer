@@ -98,13 +98,13 @@ try:
 		config_entry['verified'] = False
 
 	if 'versions' in config_entry:
-		config_versions = set(config_entry['versions'])
+		config_versions = config_entry['versions']
 	else:
-		config_versions = set()
+		config_versions = []
 
-	config_versions.add(mod_version)
+	config_versions.append(mod_version)
 
-	config_entry['versions'] = list(config_versions)
+	config_entry['versions'] = config_versions
 
 	json.dump(config_json, open(index_path / 'config.json', 'w'), indent=4)
 
