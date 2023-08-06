@@ -54,7 +54,7 @@ jobs:
 
       - name: Push to index
         shell: bash
-        if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == "true")
+        if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES')
         working-directory: ${{ github.workspace }}/index
         run: |
           git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
