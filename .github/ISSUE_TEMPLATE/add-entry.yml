@@ -2,6 +2,9 @@ name: Add an entry
 description: Add an entry to the Geode index.
 labels: []
 body: 
+  - type: markdown
+    attributes:
+      value: "## Geode index entry"
   - type: input
     id: entry
     attributes:
