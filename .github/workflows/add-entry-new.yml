@@ -10,14 +10,29 @@ jobs:
     if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "A comment on issue $NUMBER: '$BODY'"
+      - name: Checkout Indexer
+        uses: actions/checkout@v3
+        with:
+          path: code
+
+      - name: Checkout Index
+        uses: actions/checkout@v3
+        with:
+          repository: geode-sdk/mods
+          path: index
+          token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+
+      - name: Add entry
+        shell: bash
+        run: |
+          echo ENTRY_RESULT=`python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR` >> $GITHUB_ENV
+
         env:
-          NUMBER: ${{ github.event.issue.number }}
-          BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
       
       - name: Close Issue
         uses: peter-evans/close-issue@v3
         with:
           issue-number: ${{ github.event.issue.number }}
-          comment: Did stuff
+          comment: ${{ env.ENTRY_RESULT }}
