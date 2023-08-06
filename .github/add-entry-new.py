@@ -7,8 +7,8 @@ import urllib.request
 from pathlib import Path
 
 def fail(msg):
-	print(f'Could not add mod to index: {msg}')
-	sys.exit(-1)
+	print(f'{msg}')
+	sys.exit(1)
 
 
 index_path = Path(sys.argv[1])
@@ -24,7 +24,7 @@ else:
 
 if 'Your mod link' not in issue_body:
 	print('Not a valid index entry')
-	sys.exit(0)
+	sys.exit(2)
 
 # Download the geode file
 try:
