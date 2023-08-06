@@ -22,6 +22,12 @@ jobs:
           path: index
           token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
+      - name: Verify User
+        working-directory: index
+        id: verify_user
+        run: |
+          echo result=`python3 code/.github/verify.py $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+
       - name: Add Entry
         id: add_entry
         shell: bash
@@ -32,7 +38,7 @@ jobs:
 
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
           if [ $RESULT -eq 0 ]; then
-            echo push_entry=NO >> $GITHUB_OUTPUT
+            echo push_entry=YES >> $GITHUB_OUTPUT
             echo close_issue=YES >> $GITHUB_OUTPUT
           elif [ $RESULT -eq 1 ]; then
             echo push_entry=NO >> $GITHUB_OUTPUT
@@ -48,7 +54,7 @@ jobs:
 
       - name: Push to index
         shell: bash
-        if: (steps.add_entry.outputs.push_entry == 'YES')
+        if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == "true")
         working-directory: ${{ github.workspace }}/index
         run: |
           git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
