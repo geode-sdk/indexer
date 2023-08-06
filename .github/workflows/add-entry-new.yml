@@ -23,10 +23,9 @@ jobs:
           token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
       - name: Verify User
-        working-directory: index
         id: verify_user
         run: |
-          echo result=`python3 code/.github/verify.py $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+          echo result=`python3 code/.github/verify.py index $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
 
       - name: Add Entry
         id: add_entry
