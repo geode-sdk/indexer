@@ -121,6 +121,9 @@ try:
 
 	if mod_version == latest_version:
 		write_general_files(mod_directory)
+except Exception as inst:
+	fail(f'Could not populate mod folder {version_mod_directory}: {inst}')
+
 
 # Fill the old directory / for backwards compatibility
 if mod_version == latest_version:
@@ -134,8 +137,5 @@ if mod_version == latest_version:
 
 	except Exception as inst:
 		fail(f'Could not populate old mod folder {old_mod_directory}: {inst}')
-
-except Exception as inst:
-	fail(f'Could not populate mod folder {version_mod_directory}: {inst}')
 
 print(f'Successfully added {mod_id}')
