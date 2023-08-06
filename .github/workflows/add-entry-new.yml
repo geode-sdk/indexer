@@ -32,7 +32,7 @@ jobs:
 
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
           if [ $RESULT -eq 0 ]; then
-            echo push_entry=YES >> $GITHUB_OUTPUT
+            echo push_entry=NO >> $GITHUB_OUTPUT
             echo close_issue=YES >> $GITHUB_OUTPUT
           elif [ $RESULT -eq 1 ]; then
             echo push_entry=NO >> $GITHUB_OUTPUT
