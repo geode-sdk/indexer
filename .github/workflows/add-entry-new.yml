@@ -24,8 +24,11 @@ jobs:
 
       - name: Verify User
         id: verify_user
+        shell: bash
         run: |
           echo result=`python3 code/.github/verify.py index $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+        env:
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
 
       - name: Add Entry
         id: add_entry
