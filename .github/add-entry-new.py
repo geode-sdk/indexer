@@ -82,18 +82,49 @@ except Exception as inst:
 
 
 
+# Update the config.json
+try:
+	config_json = json.load(open(index_path / 'config.json', 'r'))
+
+	if 'entries' not in config_json:
+		config_json['entries'] = {}
+
+	if mod_id not in config_json['entries']:
+		config_json['entries'][mod_id] = {}
+
+	config_entry = config_json['entries'][mod_id]
+
+	if 'verified' not in config_entry:
+		config_entry['verified'] = False
+
+	if 'versions' in config_entry:
+		config_versions = set(config_entry['versions'])
+	else:
+		config_versions = set()
+
+	config_versions.add(mod_version)
+
+	config_entry['versions'] = list(config_versions)
+
+	json.dump(config_json, open(index_path / 'config.json', 'w'), indent=4)
+
+except Exception as inst:
+	fail(f'Could not populate config.json: {inst}')
+
+
+
 def write_general_files(general_path):
-	if "logo.png" in file_list:
-		archive.extract("logo.png", path=general_path)
-	if "about.md" in file_list:
-		archive.extract("about.md", path=general_path)
-	if "changelog.md" in file_list:
-		archive.extract("changelog.md", path=general_path)
+	if 'logo.png' in file_list:
+		archive.extract('logo.png', path=general_path)
+	if 'about.md' in file_list:
+		archive.extract('about.md', path=general_path)
+	if 'changelog.md' in file_list:
+		archive.extract('changelog.md', path=general_path)
 
 
 def write_version_files(version_path):
-	json.dump(entry_json, open(version_path / "entry.json", "w"), indent=4)
-	archive.extract("mod.json", path=version_path)
+	json.dump(entry_json, open(version_path / 'entry.json', 'w'), indent=4)
+	archive.extract('mod.json', path=version_path)
 
 
 # Very sad code i know
@@ -115,12 +146,9 @@ try:
 	write_version_files(version_mod_directory)
 
 	latest_version = mod_version
-	for path in mod_directory.iterdir():
-		if path.name.count('.') >= 2 and compare_versions(path.name, latest_version):
-			latest_version = path.name
-
-	print(latest_version)
-	print(mod_version)
+	for version in config_versions:
+		if compare_versions(version, latest_version):
+			latest_version = version
 
 	if mod_version == latest_version:
 		write_general_files(mod_directory)
@@ -140,5 +168,7 @@ if mod_version == latest_version:
 
 	except Exception as inst:
 		fail(f'Could not populate old mod folder {old_mod_directory}: {inst}')
+
+
 
 print(f'Successfully added {mod_id}')
