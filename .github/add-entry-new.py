@@ -116,8 +116,11 @@ try:
 
 	latest_version = mod_version
 	for path in mod_directory.iterdir():
-		if compare_versions(path.name, latest_version):
+		if path.name.count('.') >= 2 and compare_versions(path.name, latest_version):
 			latest_version = path.name
+
+	print(latest_version)
+	print(mod_version)
 
 	if mod_version == latest_version:
 		write_general_files(mod_directory)
