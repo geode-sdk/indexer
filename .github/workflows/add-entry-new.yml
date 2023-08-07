@@ -70,7 +70,15 @@ jobs:
       
       - name: Close Issue
         uses: peter-evans/close-issue@v3
-        if: (steps.add_entry.outputs.close_issue == 'YES')
+        if: (steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES')
         with:
           issue-number: ${{ github.event.issue.number }}
           comment: ${{ steps.add_entry.outputs.issue_output }}
+
+
+      - name: Comment Issue Temporary
+        uses: ben-z/actions-comment-on-issue@1.0.2
+        if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.close_issue == 'YES')
+        with:
+          message: |
+            Currently only verified users can use the issues. Sorry for the inconvenience.
