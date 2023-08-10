@@ -77,8 +77,9 @@ jobs:
 
 
       - name: Comment Issue Temporary
-        uses: ben-z/actions-comment-on-issue@1.0.2
+        uses: peter-evans/create-or-update-comment@v3
         if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.close_issue == 'YES')
         with:
-          message: |
+          issue-number: ${{ github.event.issue.number }}
+          body: |
             Currently only verified users can use the issues. Sorry for the inconvenience.
