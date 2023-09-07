@@ -77,7 +77,7 @@ jobs:
     - id: verify
       working-directory: ${{ github.workspace }}/index
       run: |
-        echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py index $COMMENT_AUTHOR` >> $GITHUB_ENV
+        echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py . $COMMENT_AUTHOR` >> $GITHUB_ENV
 
     - if: ${{ env.VERIFY == 'true' && steps.check_accept.outputs.triggered == 'true' }}
       id: check
