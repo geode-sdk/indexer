@@ -22,7 +22,7 @@ else:
 
 is_old = sys.argv[4] == 'old' if len(sys.argv) > 4 else False
 
-if is_old or 'Your mod link' not in issue_body:
+if 'Your mod link' not in issue_body and not is_old:
 	print('Not a valid index entry')
 	sys.exit(2)
 
