@@ -87,7 +87,7 @@ jobs:
         python3 ../code/.github/reset-repo.py $url
         echo "MESSAGE<<EOF" >> $GITHUB_ENV
         for i in $dirs; do
-          python3 ../code/.github/add-entry-new.py index $PR_AUTHOR $url/raw/$branch/$i/mod.geode old >> $GITHUB_ENV
+          python3 ../code/.github/add-entry-new.py . $PR_AUTHOR $url/raw/$branch/$i/mod.geode old >> $GITHUB_ENV
         done
         echo -n "EOF" >> $GITHUB_ENV
         
