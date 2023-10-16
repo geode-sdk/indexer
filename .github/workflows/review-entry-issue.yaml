@@ -1,4 +1,4 @@
-name: Review Entry
+name: Review Entry (Issues)
 
 on:
   issue_comment:
@@ -17,23 +17,7 @@ jobs:
 
     if: ${{ !github.event.issue.pull_request }}
 
-    steps:
-    - uses: khan/pull-request-comment-trigger@v1.1.0
-      id: check_accept
-      with:
-        prefix_only: true
-        trigger: '!accept'
-      env:
-        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-          
-    - uses: khan/pull-request-comment-trigger@v1.1.0
-      id: check_reject
-      with:
-        prefix_only: true
-        trigger: '!reject'
-      env:
-        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-        
+    steps:        
     - name: Checkout Indexer
       uses: actions/checkout@v3
       with:
@@ -53,7 +37,7 @@ jobs:
         echo result=`python3 code/.github/verify.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
 
     - name: Add Entry
-      if: (steps.check_accept.outputs.triggered == 'true')
+      if: ${{ github.event.comment.body == '!accept' }}
       id: add_entry
       shell: bash
       run: |
@@ -78,7 +62,7 @@ jobs:
 
     - name: Push to index
       shell: bash
-      if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES' && steps.check_accept.outputs.triggered == 'true')
+      if: ${{ steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES' && github.event.comment.body == '!accept' }}
       working-directory: ${{ github.workspace }}/index
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
@@ -90,7 +74,7 @@ jobs:
     
     - name: Close Issue
       uses: peter-evans/close-issue@v3
-      if: (steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES' && (steps.check_reject.outputs.triggered == 'true' || steps.check_accept.outputs.triggered == 'true'))
+      if: ${{ steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES' && (github.event.comment.body == '!accept' || github.event.comment.body == '!reject') }}
       with:
         issue-number: ${{ github.event.issue.number }}
         comment: ${{ steps.add_entry.outputs.issue_output }}
