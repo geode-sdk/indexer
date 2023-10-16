@@ -82,4 +82,4 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Currently only verified users can use the issues. Sorry for the inconvenience.
+            Waiting for a verified user to comment "!accept" to accept the entry.
