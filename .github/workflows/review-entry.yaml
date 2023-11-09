@@ -76,7 +76,7 @@ jobs:
     - id: verify
       working-directory: ${{ github.workspace }}/index
       run: |
-        echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify.py . $COMMENT_AUTHOR` >> $GITHUB_ENV
+        echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify-staff.py . $COMMENT_AUTHOR` >> $GITHUB_ENV
 
     - if: ${{ env.VERIFY == 'YES' && steps.check_accept.outputs.triggered == 'true' }}
       id: check
@@ -139,7 +139,7 @@ jobs:
       id: verify_user
       shell: bash
       run: |
-        echo result=`python3 code/.github/verify.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
+        echo result=`python3 code/.github/verify-staff.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
 
     - name: Add Entry
       if: ${{ github.event.comment.body == '!accept' }}
