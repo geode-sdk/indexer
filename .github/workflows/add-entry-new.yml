@@ -1,0 +1,85 @@
+name: Add entry new
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  issue_commented:
+    name: Issue test
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Indexer
+        uses: actions/checkout@v3
+        with:
+          path: code
+
+      - name: Checkout Index
+        uses: actions/checkout@v3
+        with:
+          repository: geode-sdk/mods
+          path: index
+          token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+
+      - name: Verify User
+        id: verify_user
+        shell: bash
+        run: |
+          echo result=`python3 code/.github/verify.py index $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+        env:
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+
+      - name: Add Entry
+        id: add_entry
+        shell: bash
+        run: |
+          python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR >> result.txt
+
+          RESULT=$?
+
+          echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
+          if [ $RESULT -eq 0 ]; then
+            echo push_entry=YES >> $GITHUB_OUTPUT
+            echo close_issue=YES >> $GITHUB_OUTPUT
+          elif [ $RESULT -eq 1 ]; then
+            echo push_entry=NO >> $GITHUB_OUTPUT
+            echo close_issue=YES >> $GITHUB_OUTPUT
+          else
+            echo push_entry=NO >> $GITHUB_OUTPUT
+            echo close_issue=NO >> $GITHUB_OUTPUT
+          fi
+
+        env:
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+
+      - name: Push to index
+        shell: bash
+        if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES')
+        working-directory: ${{ github.workspace }}/index
+        run: |
+          git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+          git config --local user.name "GeodeBot"
+          git add -A
+          git commit -m "Update from $ISSUE_AUTHOR"
+          git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+          git push -u origin main || true
+        env:
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+      
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        if: (steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES')
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: ${{ steps.add_entry.outputs.issue_output }}
+
+
+      - name: Comment Issue Temporary
+        uses: peter-evans/create-or-update-comment@v3
+        if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.close_issue == 'YES')
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Waiting for a verified user to comment "!accept" to accept the entry.
