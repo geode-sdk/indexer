@@ -139,6 +139,7 @@ jobs:
       id: verify_user
       shell: bash
       run: |
+        echo what is this !${{ github.event.comment.body }}!
         echo result=`python3 code/.github/verify-staff.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
 
     - name: Add Entry
