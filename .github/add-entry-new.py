@@ -55,8 +55,10 @@ try:
 		mod_platforms.append("macos")
 	if f"{mod_id}.dll" in file_list:
 		mod_platforms.append("windows")
-	if f"{mod_id}.so" in file_list:
-		mod_platforms.append("android")
+	if f"{mod_id}.android32.so" in file_list:
+		mod_platforms.append("android32")
+	if f"{mod_id}.android64.so" in file_list:
+		mod_platforms.append("android64")
 	if f"{mod_id}.ios.dylib" in file_list:
 		mod_platforms.append("ios")
 
