@@ -158,20 +158,4 @@ try:
 except Exception as inst:
 	fail(f'Could not populate mod folder {version_mod_directory}: {inst}')
 
-
-# Fill the old directory / for backwards compatibility
-if mod_version == latest_version:
-	try:
-		old_mod_version = mod_version.split('.')[0]
-		old_mod_directory = index_path / 'mods' / (mod_id + '@' + old_mod_version)
-		old_mod_directory.mkdir(exist_ok=True)
-
-		write_general_files(old_mod_directory)
-		write_version_files(old_mod_directory)
-
-	except Exception as inst:
-		fail(f'Could not populate old mod folder {old_mod_directory}: {inst}')
-
-
-
 print(f'Successfully added {mod_id}')
