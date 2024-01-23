@@ -28,7 +28,7 @@ if 'Your mod link' not in issue_body and not is_old:
 
 # Download the geode file
 try:
-	mod_url = issue_body.replace('### Your mod link\n\n', '')
+	mod_url = issue_body.replace('### Your mod link', '').strip()
 
 	urllib.request.urlretrieve(mod_url, 'mod.geode')
 
