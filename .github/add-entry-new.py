@@ -7,7 +7,7 @@ import urllib.request
 from pathlib import Path
 
 def fail(msg):
-	print(f'{msg}')
+	print(f'Fail: {msg}', file=sys.stderr)
 	sys.exit(1)
 
 
@@ -23,7 +23,7 @@ else:
 is_old = sys.argv[4] == 'old' if len(sys.argv) > 4 else False
 
 if 'Your mod link' not in issue_body and not is_old:
-	print('Not a valid index entry')
+	print('Not a valid index entry', file=sys.stderr)
 	sys.exit(2)
 
 # Download the geode file
