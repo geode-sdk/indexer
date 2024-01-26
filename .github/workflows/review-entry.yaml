@@ -1,0 +1,185 @@
+name: Review Entry
+
+on:
+  issue_comment:
+    types: [created]
+
+env:
+  PR_AUTHOR: ${{ github.event.issue.user.login }}
+  ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+  COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+
+jobs:
+  check_pull_request:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+      verified: ${{ steps.verify.outputs.verify }}
+
+    if: ${{ github.event.issue.pull_request }}
+
+    steps:
+    - uses: khan/pull-request-comment-trigger@v1.1.0
+      id: check_accept
+      with:
+        prefix_only: true
+        trigger: '!accept'
+        # reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+          
+    - uses: khan/pull-request-comment-trigger@v1.1.0
+      id: check_reject
+      with:
+        prefix_only: true
+        trigger: '!reject'
+        # reaction: rocket
+      env:
+        GITHUB_TOKEN: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+        
+    - uses: actions/github-script@v3
+      id: get_pr
+      with:
+        script: |
+          const request = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          }
+          core.info(`Getting PR #${request.pull_number} from ${request.owner}/${request.repo}`)
+          try {
+            const result = await github.pulls.get(request)
+            return result.data
+          } catch (err) {
+            core.setFailed(`Request failed with error ${err}`)
+          }
+    
+    - name: Checkout PR
+      uses: actions/checkout@v3
+      with:
+        path: repo
+        repository: ${{ fromJSON(steps.get_pr.outputs.result).head.repo.full_name }}
+        ref: ${{ fromJSON(steps.get_pr.outputs.result).head.sha }}
+        
+    - name: Checkout Indexer
+      uses: actions/checkout@v3
+      with:
+        path: code
+
+    - name: Checkout Index
+      uses: actions/checkout@v3
+      with:
+        repository: geode-sdk/mods
+        path: index
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+
+    - id: verify
+      working-directory: ${{ github.workspace }}/index
+      run: |
+        echo VERIFY=`python3 ${{ github.workspace }}/code/.github/verify-staff.py . $COMMENT_AUTHOR` >> $GITHUB_ENV
+
+    - if: ${{ env.VERIFY == 'YES' && steps.check_accept.outputs.triggered == 'true' }}
+      id: check
+      working-directory: repo
+      shell: bash
+      run: |
+        url=`git remote get-url origin`
+        branch=`git rev-parse HEAD`
+        dirs=`ls -1d */`
+        cd ../index
+        python3 ../code/.github/reset-repo.py $url
+        cd ..
+        echo "MESSAGE<<EOF" >> $GITHUB_ENV
+        for i in $dirs; do
+          python3 ./code/.github/add-entry-new.py index $PR_AUTHOR $url/raw/$branch/${i}mod.geode old >> $GITHUB_ENV
+        done
+        echo -n "EOF" >> $GITHUB_ENV
+        
+    - if: ${{ env.VERIFY == 'YES' && (steps.check_reject.outputs.triggered == 'true' || steps.check_accept.outputs.triggered == 'true')}}
+      name: Close PR
+      uses: peter-evans/close-pull@v2
+      with:
+        pull-request-number: ${{ github.event.issue.number }}
+        comment: ${{ env.MESSAGE }}
+
+    - if: ${{ env.VERIFY == 'YES' && steps.check_accept.outputs.triggered == 'true'}}
+      name: Commit, push to index
+      shell: bash
+      working-directory: ${{ github.workspace }}/index
+      run: |
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
+        git add -A
+        git commit -m "Update from $PR_AUTHOR"
+        git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+        git push -u origin main || true
+
+  check_issues:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+      verified: ${{ steps.verify.outputs.verify }}
+
+    if: ${{ !github.event.issue.pull_request }}
+
+    steps:        
+    - name: Checkout Indexer
+      uses: actions/checkout@v3
+      with:
+        path: code
+
+    - name: Checkout Index
+      uses: actions/checkout@v3
+      with:
+        repository: geode-sdk/mods
+        path: index
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+
+    - name: Verify User
+      id: verify_user
+      shell: bash
+      run: |
+        echo result=`python3 code/.github/verify-staff.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
+
+    - name: Add Entry
+      if: ${{ github.event.comment.body == '!accept' }}
+      id: add_entry
+      shell: bash
+      run: |
+        python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR >> result.txt
+
+        RESULT=$?
+
+        echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
+        if [ $RESULT -eq 0 ]; then
+          echo push_entry=YES >> $GITHUB_OUTPUT
+          echo close_issue=YES >> $GITHUB_OUTPUT
+        elif [ $RESULT -eq 1 ]; then
+          echo push_entry=NO >> $GITHUB_OUTPUT
+          echo close_issue=YES >> $GITHUB_OUTPUT
+        else
+          echo push_entry=NO >> $GITHUB_OUTPUT
+          echo close_issue=NO >> $GITHUB_OUTPUT
+        fi
+
+      env:
+        ISSUE_BODY: ${{ github.event.issue.body }}
+
+    - name: Push to index
+      shell: bash
+      if: ${{ steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES' && github.event.comment.body == '!accept' }}
+      working-directory: ${{ github.workspace }}/index
+      run: |
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
+        git add -A
+        git commit -m "Update from $ISSUE_AUTHOR"
+        git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+        git push -u origin main || true
+    
+    - name: Close Issue
+      uses: peter-evans/close-issue@v3
+      if: ${{ steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES' && (github.event.comment.body == '!accept' || github.event.comment.body == '!reject') }}
+      with:
+        issue-number: ${{ github.event.issue.number }}
+        comment: ${{ steps.add_entry.outputs.issue_output }}        
