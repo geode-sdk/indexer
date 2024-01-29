@@ -29,7 +29,7 @@ if 'Your mod link' not in issue_body and not is_old:
 
 # Download the geode file
 try:
-	match = re.search(r'\s*?### Your mod link\s*?(\S+?)', issue_body);
+	match = re.search(r'\s*?### Your mod link\s*?(\S+?)\s*?', issue_body);
 	if match:
 		mod_url = match.group(1)
 		urllib.request.urlretrieve(mod_url, 'mod.geode')
