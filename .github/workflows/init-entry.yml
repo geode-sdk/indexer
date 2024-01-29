@@ -10,5 +10,5 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          Waiting for a verified user to comment "!accept" to accept, or "!reject" to reject the entry.
+          Waiting for a staff to comment "!accept" to accept, or "!reject" to reject the entry.
 
