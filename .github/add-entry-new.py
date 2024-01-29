@@ -4,6 +4,7 @@ import os
 import sys
 import zipfile
 import urllib.request
+import re
 from pathlib import Path
 
 def fail(msg):
@@ -28,9 +29,12 @@ if 'Your mod link' not in issue_body and not is_old:
 
 # Download the geode file
 try:
-	mod_url = issue_body.replace('### Your mod link', '').strip()
-
-	urllib.request.urlretrieve(mod_url, 'mod.geode')
+	match = re.search(r'\s*?### Your mod link\s*?(\S+?)');
+	if match:
+		mod_url = match.group(1)
+		urllib.request.urlretrieve(mod_url, 'mod.geode')
+	else:
+		fail(f'Could not find the geode link')
 
 except Exception as inst:
 	fail(f'Could not download the geode file: {inst}')
