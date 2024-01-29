@@ -3,7 +3,9 @@
 This repository is for the Geode Mod Indexer. \
 This is a streamlined way of adding mods to the Geode Index.
 
-## How to add mods  
+## How to add mods
+See the [docs page](https://docs.geode-sdk.org/mods/publishing) for more info.
+
 * Create a new issue called "Add an entry"
 * Add a direct link to your .geode file
 
