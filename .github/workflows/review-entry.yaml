@@ -164,6 +164,7 @@ jobs:
 
       env:
         ISSUE_BODY: ${{ github.event.issue.body }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Push to index
       shell: bash
