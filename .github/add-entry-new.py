@@ -6,6 +6,7 @@ import zipfile
 import urllib.request
 import re
 from pathlib import Path
+import subprocess
 
 def fail(msg):
 	print(f'Fail: {msg}', file=sys.stderr)
@@ -131,6 +132,9 @@ except Exception as inst:
 def write_general_files(general_path):
 	if 'logo.png' in file_list:
 		archive.extract('logo.png', path=general_path)
+		logo_path = (general_path / 'logo.png').as_posix()
+		# resize mod logos
+		subprocess.call(['convert', logo_path, '-resize', '336x336>', logo_path])
 	if 'about.md' in file_list:
 		archive.extract('about.md', path=general_path)
 	if 'changelog.md' in file_list:
