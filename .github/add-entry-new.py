@@ -108,8 +108,16 @@ try:
 	else:
 		config_versions = []
 
+	if config_versions:
+		old_version = config_versions[-1]
+	else:
+		old_version = None
+
 	if mod_version not in config_versions:
 		config_versions.append(mod_version)
+	else:
+		# replacing existing ver :grimacing:
+		old_version = mod_version
 
 	config_entry['versions'] = config_versions
 
@@ -161,5 +169,54 @@ try:
 		write_general_files(mod_directory)
 except Exception as inst:
 	fail(f'Could not populate mod folder {version_mod_directory}: {inst}')
+
+def send_webhook(mod_id, new_version, old_version=None):
+    from urllib import request
+    import json
+    import os
+
+    COLOR = 0x8d73ce
+
+	issue_author = os.getenv('ISSUE_AUTHOR', '?')
+	comment_author = os.getenv('COMMENT_AUTHOR', '?')
+
+    description = f'''https://geode-sdk.org/mods/{mod_id}
+
+Uploaded by: [{issue_author}](https://github.com/{issue_author})
+Accepted by: [{comment_author}](https://github.com/{comment_author})'''
+
+    if new_version == old_version:
+        title = f'Replaced? `{mod_id}` {new_version}'
+    elif old_version is None:
+        title = f'Added `{mod_id}` {new_version}'
+        description = 'New mod!\n' + description
+    else:
+        title = f'Updated `{mod_id}` {old_version} -> {new_version}'
+
+    embeds = [
+        {
+            'color': COLOR,
+            'title': title,
+            'description': description,
+            'thumbnail': {
+                'url': f'https://raw.githubusercontent.com/geode-sdk/mods/main/mods-v2/{mod_id}/logo.png'
+            }
+        }
+    ]
+
+    req = request.Request(os.getenv('DISCORD_WEBHOOK_URL'), method='POST')
+    req.add_header('User-Agent', 'python urllib')
+    req.add_header('Content-Type', 'application/json')
+    data = {
+        'content': None,
+        'embeds': embeds,
+    }
+    request.urlopen(req, data=json.dumps(data).encode('utf-8'))
+
+try:
+	send_webhook(mod_id, old_version=old_version, new_version=mod_version)
+except:
+	# dont care about webhook failing
+	pass
 
 print(f'Successfully added {mod_id}')

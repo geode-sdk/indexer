@@ -52,6 +52,7 @@ jobs:
 
         env:
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          COMMENT_AUTHOR: ${{ github.event.issue.user.login }}
           ISSUE_BODY: ${{ github.event.issue.body }}
 
       - name: Push to index
