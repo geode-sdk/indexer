@@ -218,7 +218,8 @@ Accepted by: [{comment_author}](https://github.com/{comment_author})'''
 	request.urlopen(req, data=json.dumps(data).encode('utf-8'))
 
 try:
-	send_webhook(mod_id, old_version=old_version, new_version=mod_version)
+	if os.getenv('VERIFY_USER_RESULT') == 'YES':
+		send_webhook(mod_id, old_version=old_version, new_version=mod_version)
 except:
 	# dont care about webhook failing
 	pass
