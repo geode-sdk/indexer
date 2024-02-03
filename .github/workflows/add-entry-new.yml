@@ -47,7 +47,7 @@ jobs:
 
           # this is so stupid but i cant find another way of 
           # plopping the file into the github output without losing new lines
-          DELIMITER="$(openssl rand -hex 16)"
+          DELIMITER="$(openssl rand -hex 8)"
 
           echo "issue_output<<$DELIMITER" >> $GITHUB_OUTPUT
           cat result.txt >> $GITHUB_OUTPUT
@@ -86,7 +86,7 @@ jobs:
       
       - name: Close because invalid
         if: steps.add_entry.outputs.issue_err != ''
-        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY" -R "${{ github.repository }}"
+        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY" -R "${{ github.repository }}" --reason "not planned"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BODY: ${{ steps.add_entry.outputs.issue_err }}
