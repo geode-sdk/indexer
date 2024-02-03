@@ -2,7 +2,7 @@ name: Add entry new
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   issue_commented:
@@ -35,11 +35,12 @@ jobs:
         id: add_entry
         shell: bash
         run: |
-          python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR >> result.txt
+          python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR > result.txt 2> err.txt
 
           RESULT=$?
 
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
+          echo issue_err=`cat err.txt` >> $GITHUB_OUTPUT
           if [ $RESULT -eq 0 ]; then
             echo push_entry=YES >> $GITHUB_OUTPUT
             echo close_issue=YES >> $GITHUB_OUTPUT
@@ -74,10 +75,10 @@ jobs:
       
       - name: Close Issue
         uses: peter-evans/close-issue@v3
-        if: (steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.close_issue == 'YES')
+        if: steps.verify_user.outputs.issue_err != '' && steps.add_entry.outputs.close_issue == 'YES'
         with:
           issue-number: ${{ github.event.issue.number }}
-          comment: ${{ steps.add_entry.outputs.issue_output }}
+          comment: ${{ steps.add_entry.outputs.issue_err }}
 
 
       - name: Comment Issue Temporary
@@ -86,4 +87,4 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Waiting for a verified user to comment "!accept" to accept the entry.
+            Waiting for staff to comment "!accept" to accept the entry.
