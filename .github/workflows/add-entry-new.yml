@@ -45,24 +45,18 @@ jobs:
           echo "output is"
           cat result.txt
 
-          # this is so stupid but i cant find another way of 
-          # plopping the file into the github output without losing new lines
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          EOF=$(openssl rand -hex 8)
 
           {
-            echo "issue_output<<EOF"
-            #cat result.txt
-            echo "Epic info!"
-            echo "EOF"
+            echo "issue_output<<$EOF"
+            cat result.txt
+            echo "$EOF"
           } >> "$GITHUB_OUTPUT"
             
-          echo i hate this shit
-
           {
-            echo "issue_err<<EOF"
-            #cat err.txt
-            echo ""
-            echo "EOF"
+            echo "issue_err<<$EOF"
+            cat err.txt
+            echo "$EOF"
           } >> "$GITHUB_OUTPUT"
 
           if [ $RESULT -eq 0 ]; then
@@ -94,7 +88,7 @@ jobs:
       
       - name: Close because invalid
         if: steps.add_entry.outputs.issue_err != ''
-        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY" -R "${{ github.repository }}" --reason "not planned"
+        run: gh issue close ${{ github.event.issue.number }} --comment "```\n$BODY```" -R "${{ github.repository }}" --reason "not planned"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BODY: ${{ steps.add_entry.outputs.issue_err }}
