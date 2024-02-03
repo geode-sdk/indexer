@@ -47,15 +47,17 @@ jobs:
 
           # this is so stupid but i cant find another way of 
           # plopping the file into the github output without losing new lines
-          DELIMITER="$(openssl rand -hex 8)"
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
 
-          echo "issue_output<<$DELIMITER" >> $GITHUB_OUTPUT
-          cat result.txt >> $GITHUB_OUTPUT
-          echo "$DELIMITER" >> $GITHUB_OUTPUT
+          AAAA=$(cat result.txt)
+          echo "issue_output<<$EOF" >> $GITHUB_OUTPUT
+          echo "$AAAA" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
-          echo "issue_err<<$DELIMITER" >> $GITHUB_OUTPUT
-          cat err.txt >> $GITHUB_OUTPUT
-          echo "$DELIMITER" >> $GITHUB_OUTPUT
+          AAAA=$(cat err.txt)
+          echo "issue_err<<$EOF" >> $GITHUB_OUTPUT
+          echo "$AAAA" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
           if [ $RESULT -eq 0 ]; then
             echo push_entry=YES >> $GITHUB_OUTPUT
