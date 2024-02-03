@@ -76,7 +76,7 @@ jobs:
       
       - name: Close Issue
         uses: peter-evans/close-issue@v3
-        if: steps.verify_user.outputs.issue_err != '' && steps.add_entry.outputs.close_issue == 'YES'
+        if: steps.add_entry.outputs.issue_err != '' && steps.add_entry.outputs.close_issue == 'YES'
         with:
           issue-number: ${{ github.event.issue.number }}
           comment: ${{ steps.add_entry.outputs.issue_err }}
