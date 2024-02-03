@@ -46,12 +46,9 @@ jobs:
           if [ $RESULT -eq 0 ]; then
             echo push_entry=YES >> $GITHUB_OUTPUT
             echo close_issue=YES >> $GITHUB_OUTPUT
-          elif [ $RESULT -eq 1 ]; then
-            echo push_entry=NO >> $GITHUB_OUTPUT
-            echo close_issue=YES >> $GITHUB_OUTPUT
           else
             echo push_entry=NO >> $GITHUB_OUTPUT
-            echo close_issue=NO >> $GITHUB_OUTPUT
+            echo close_issue=YES >> $GITHUB_OUTPUT
           fi
 
         env:
@@ -90,3 +87,4 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Waiting for staff to comment "!accept" to accept the entry.
+            ${{ steps.add_entry.outputs.issue_output }}
