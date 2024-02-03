@@ -1,0 +1,25 @@
+name: Add entry new
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test_action:
+    name: Test Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Entry
+        id: add_entry
+        shell: bash
+        run: |
+          {
+            echo "issue_output<<EOF"
+            echo "Epic info!"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Print it
+        run: |
+          echo "${{ steps.add_entry.outputs.issue_output }}"
