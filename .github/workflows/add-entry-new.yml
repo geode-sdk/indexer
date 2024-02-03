@@ -50,17 +50,19 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
 
           {
-            echo "issue_output<<$EOF"
-            cat result.txt
-            echo "$EOF"
+            echo "issue_output<<EOF"
+            #cat result.txt
+            echo "Epic info!"
+            echo "EOF"
           } >> "$GITHUB_OUTPUT"
             
           echo i hate this shit
 
           {
-            echo "issue_err<<$EOF"
-            cat err.txt
-            echo "$EOF"
+            echo "issue_err<<EOF"
+            #cat err.txt
+            echo ""
+            echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
           if [ $RESULT -eq 0 ]; then
