@@ -226,7 +226,7 @@ except:
 
 print(f'''## Info:
 * Mod ID: `{mod_id}`
-* Version: `{mod_versionasd}`
+* Version: `{mod_version}`
 * Targetting GD: `{mod_json['gd']}`
 * Targetting Geode: `{mod_json['geode']}`
 ''')
