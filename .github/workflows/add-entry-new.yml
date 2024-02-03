@@ -49,9 +49,13 @@ jobs:
           # plopping the file into the github output without losing new lines
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
 
-          echo "fuck<<$EOF" >> $GITHUB_OUTPUT
-          echo "fuck\nthis\nshit" >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
+          {
+            echo 'JSON_RESPONSE<<EOF'
+            echo im
+            echo so
+            echo done
+            echo EOF
+          } >> "$GITHUB_ENV"
 
           echo i hate this shit
 
