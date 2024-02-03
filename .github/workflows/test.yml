@@ -14,11 +14,15 @@ jobs:
         id: add_entry
         shell: bash
         run: |
+          echo has_issues=NO >> $GITHUB_OUTPUT
+          
           {
             echo "issue_output<<EOF"
             echo "Epic info!"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+
+          echo push_entry=NO >> $GITHUB_OUTPUT
 
       - name: Print it
         run: |

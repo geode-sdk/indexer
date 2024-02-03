@@ -259,4 +259,4 @@ if potential_issues:
 
 	if os.getenv('GITHUB_OUTPUT'):
 		with open(os.getenv('GITHUB_OUTPUT'), 'a') as file:
-			file.write('has_issues=YES')
+			file.write('has_issues=YES\n')
