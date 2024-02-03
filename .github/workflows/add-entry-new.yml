@@ -42,6 +42,9 @@ jobs:
           RESULT=$?
           set -e
 
+          echo "output is"
+          cat result.txt
+
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
           echo issue_err=`cat err.txt` >> $GITHUB_OUTPUT
           if [ $RESULT -eq 0 ]; then
