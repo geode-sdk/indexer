@@ -88,10 +88,10 @@ jobs:
       
       - name: Close because invalid
         if: steps.add_entry.outputs.issue_err != ''
-        run: gh issue close ${{ github.event.issue.number }} --comment "```$BODY```" -R "${{ github.repository }}" --reason "not planned"
+        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY" -R "${{ github.repository }}" --reason "not planned"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BODY: ${{ steps.add_entry.outputs.issue_err }}
+          BODY: "```\n${{ steps.add_entry.outputs.issue_err }}```"
 
       - name: Close because verified and valid
         if: steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.push_entry == 'YES' && steps.add_entry.outputs.has_issues == 'NO'
