@@ -41,6 +41,7 @@ jobs:
           set -e
 
           echo "result is $RESULT"
+          cat err.txt
 
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
           echo issue_err=`cat err.txt` >> $GITHUB_OUTPUT
@@ -83,7 +84,7 @@ jobs:
 
       - name: Comment Issue Temporary
         uses: peter-evans/create-or-update-comment@v4
-        if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.close_issue == 'YES')
+        if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.push_entry == 'YES')
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
