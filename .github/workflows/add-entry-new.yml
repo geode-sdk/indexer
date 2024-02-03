@@ -88,7 +88,7 @@ jobs:
       
       - name: Close because invalid
         if: steps.add_entry.outputs.issue_err != ''
-        run: gh issue close ${{ github.event.issue.number }} --comment "```\n$BODY```" -R "${{ github.repository }}" --reason "not planned"
+        run: gh issue close ${{ github.event.issue.number }} --comment "```$BODY```" -R "${{ github.repository }}" --reason "not planned"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BODY: ${{ steps.add_entry.outputs.issue_err }}

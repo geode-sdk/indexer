@@ -235,7 +235,7 @@ potential_issues = []
 if old_version == mod_version:
 	potential_issues.append(f'Replacing an existing version `{mod_version}`')
 if mod_json['gd'] == '*':
-	potential_issues.append(f'Targetting *any* GD version, make sure you really do.')
+	potential_issues.append(f'Targetting *any* GD version, make sure you really support that.')
 
 def check_bad_about():
 	if not (mod_directory / 'about.md').exists():
