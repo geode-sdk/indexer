@@ -45,8 +45,18 @@ jobs:
           echo "output is"
           cat result.txt
 
-          echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
-          echo issue_err=`cat err.txt` >> $GITHUB_OUTPUT
+          # this is so stupid but i cant find another way of 
+          # plopping the file into the github output without losing new lines
+          DELIMITER="$(openssl rand -hex 16)"
+
+          echo "issue_output<<$DELIMITER" >> $GITHUB_OUTPUT
+          cat result.txt >> $GITHUB_OUTPUT
+          echo "$DELIMITER" >> $GITHUB_OUTPUT
+
+          echo "issue_err<<$DELIMITER" >> $GITHUB_OUTPUT
+          cat err.txt >> $GITHUB_OUTPUT
+          echo "$DELIMITER" >> $GITHUB_OUTPUT
+
           if [ $RESULT -eq 0 ]; then
             echo push_entry=YES >> $GITHUB_OUTPUT
           else
