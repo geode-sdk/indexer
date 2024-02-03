@@ -35,7 +35,9 @@ jobs:
         id: add_entry
         shell: bash
         run: |
+          set +e
           python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR > result.txt 2> err.txt
+          set -e
 
           RESULT=$?
 
