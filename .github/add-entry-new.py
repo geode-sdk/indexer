@@ -244,7 +244,7 @@ def check_bad_about():
 		with open(mod_directory / 'about.md', 'r') as file:
 			contents = file.read().strip()
 		lines = contents.splitlines()
-		if len(lines) == 3 && lines[-1].lower() == 'edit about.md to change this':
+		if len(lines) == 3 and lines[-1].lower() == 'edit about.md to change this':
 			return True
 	return False
 
