@@ -7,7 +7,7 @@ on:
 jobs:
   issue_created:
     name: Issue test
-    if: !github.event.issue.pull_request && github.event.issue.state != 'open'
+    if: !github.event.issue.pull_request && github.event.issue.state == 'open'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Indexer
@@ -35,22 +35,19 @@ jobs:
         id: add_entry
         shell: bash
         run: |
+          echo has_issues=NO >> $GITHUB_OUTPUT
+
           set +e
           python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR > result.txt 2> err.txt
           RESULT=$?
           set -e
 
-          echo "result is $RESULT"
-          cat err.txt
-
           echo issue_output=`cat result.txt` >> $GITHUB_OUTPUT
           echo issue_err=`cat err.txt` >> $GITHUB_OUTPUT
           if [ $RESULT -eq 0 ]; then
             echo push_entry=YES >> $GITHUB_OUTPUT
-            echo close_issue=YES >> $GITHUB_OUTPUT
           else
             echo push_entry=NO >> $GITHUB_OUTPUT
-            echo close_issue=YES >> $GITHUB_OUTPUT
           fi
 
         env:
@@ -62,7 +59,7 @@ jobs:
 
       # - name: Push to index
       #   shell: bash
-      #   if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES')
+      #   if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.has_issues == 'NO')
       #   working-directory: ${{ github.workspace }}/index
       #   run: |
       #     git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
@@ -74,17 +71,24 @@ jobs:
       #   env:
       #     ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
       
-      - name: Close Issue
+      - name: Close because invalid
         uses: peter-evans/close-issue@v3
-        if: steps.add_entry.outputs.issue_err != '' && steps.add_entry.outputs.close_issue == 'YES'
+        if: steps.add_entry.outputs.issue_err != ''
         with:
           issue-number: ${{ github.event.issue.number }}
+          close-reason: not_planned
           comment: ${{ steps.add_entry.outputs.issue_err }}
 
+      - name: Close because verified and valid
+        uses: peter-evans/close-issue@v3
+        if: steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.push_entry == 'YES' && steps.add_entry.outputs.has_issues == 'NO'
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: ${{ steps.add_entry.outputs.issue_output }}
 
-      - name: Comment Issue Temporary
+      - name: Comment waiting for staff
         uses: peter-evans/create-or-update-comment@v4
-        if: (steps.verify_user.outputs.result == 'NO' && steps.add_entry.outputs.push_entry == 'YES')
+        if: (steps.verify_user.outputs.result == 'NO' || steps.add_entry.outputs.has_issues == 'YES') && steps.add_entry.outputs.push_entry == 'YES'
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
