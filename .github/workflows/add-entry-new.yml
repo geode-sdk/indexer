@@ -20,13 +20,14 @@ jobs:
         with:
           repository: geode-sdk/mods
           path: index
-          token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+          # token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
       - name: Verify User
         id: verify_user
         shell: bash
         run: |
-          echo result=`python3 code/.github/verify.py index $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+          # echo result=`python3 code/.github/verify.py index $ISSUE_AUTHOR` >> $GITHUB_OUTPUT
+          echo result=NO >> $GITHUB_OUTPUT
         env:
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
 
@@ -57,19 +58,19 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           VERIFY_USER_RESULT: ${{ steps.verify_user.outputs.result }}
 
-      - name: Push to index
-        shell: bash
-        if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES')
-        working-directory: ${{ github.workspace }}/index
-        run: |
-          git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
-          git config --local user.name "GeodeBot"
-          git add -A
-          git commit -m "Update from $ISSUE_AUTHOR"
-          git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
-          git push -u origin main || true
-        env:
-          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+      # - name: Push to index
+      #   shell: bash
+      #   if: (steps.add_entry.outputs.push_entry == 'YES' && steps.verify_user.outputs.result == 'YES')
+      #   working-directory: ${{ github.workspace }}/index
+      #   run: |
+      #     git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+      #     git config --local user.name "GeodeBot"
+      #     git add -A
+      #     git commit -m "Update from $ISSUE_AUTHOR"
+      #     git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+      #     git push -u origin main || true
+      #   env:
+      #     ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
       
       - name: Close Issue
         uses: peter-evans/close-issue@v3
