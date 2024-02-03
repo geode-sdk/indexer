@@ -72,19 +72,18 @@ jobs:
       #     ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
       
       - name: Close because invalid
-        uses: peter-evans/close-issue@v3
         if: steps.add_entry.outputs.issue_err != ''
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          close-reason: not_planned
-          comment: ${{ steps.add_entry.outputs.issue_err }}
+        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BODY: ${{ steps.add_entry.outputs.issue_err }}
 
       - name: Close because verified and valid
-        uses: peter-evans/close-issue@v3
         if: steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.push_entry == 'YES' && steps.add_entry.outputs.has_issues == 'NO'
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          comment: ${{ steps.add_entry.outputs.issue_output }}
+        run: gh issue close ${{ github.event.issue.number }} --comment "$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BODY: ${{ steps.add_entry.outputs.issue_output }}
 
       - name: Comment waiting for staff
         uses: peter-evans/create-or-update-comment@v4

@@ -226,14 +226,14 @@ except:
 
 print(f'''## Info:
 * Mod ID: `{mod_id}`
-* Version: `{new_version}`
+* Version: `{mod_versionasdasd}`
 * Targetting GD: `{mod_json['gd']}`
 * Targetting Geode: `{mod_json['geode']}`
 ''')
 
 potential_issues = []
-if old_version == new_version:
-	potential_issues.append(f'Replacing an existing version `{new_version}`')
+if old_version == mod_version:
+	potential_issues.append(f'Replacing an existing version `{mod_version}`')
 if mod_json['gd'] == '*':
 	potential_issues.append(f'Targetting *any* GD version, make sure you really do.')
 
@@ -244,7 +244,7 @@ def check_bad_about():
 		with open(mod_directory / 'about.md', 'r') as file:
 			contents = file.read().strip()
 		lines = contents.splitlines()
-		if len(lines) == 3 and lines[-1].lower() == 'edit about.md to change this':
+		if len(lines) == 3 and lines[-1].lower().strip() == 'edit about.md to change this':
 			return True
 	return False
 
