@@ -51,11 +51,9 @@ jobs:
 
           {
             echo 'JSON_RESPONSE<<EOF'
-            echo im
-            echo so
-            echo done
+            cat result.txt
             echo EOF
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
 
           echo i hate this shit
 
