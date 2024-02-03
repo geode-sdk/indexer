@@ -5,9 +5,9 @@ on:
     types: [opened, edited]
 
 jobs:
-  issue_commented:
+  issue_created:
     name: Issue test
-    if: ${{ !github.event.issue.pull_request }}
+    if: !github.event.issue.pull_request && github.event.issue.state != 'open'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Indexer
