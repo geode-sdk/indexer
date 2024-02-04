@@ -224,4 +224,39 @@ except:
 	# dont care about webhook failing
 	pass
 
-print(f'Successfully added {mod_id}')
+print(f'''## Info:
+* Mod ID: `{mod_id}`
+* Version: `{mod_version}`
+* Targetting GD: `{mod_json['gd']}`
+* Targetting Geode: `{mod_json['geode']}`
+''')
+
+potential_issues = []
+if old_version == mod_version:
+	potential_issues.append(f'Replacing an existing version `{mod_version}`')
+if mod_json['gd'] == '*':
+	potential_issues.append(f'Targetting *any* GD version, make sure you really support that.')
+
+def check_bad_about():
+	if not (mod_directory / 'about.md').exists():
+		return True
+	else:
+		with open(mod_directory / 'about.md', 'r') as file:
+			contents = file.read().strip()
+		lines = contents.splitlines()
+		if len(lines) == 3 and lines[-1].lower().strip() == 'edit about.md to change this':
+			return True
+	return False
+
+if check_bad_about():
+	potential_issues.append('Missing/unchanged `about.md`. Please consider writing one to let the user know what they are downloading.')
+
+# TODO: check for unchanged logo.png
+
+if potential_issues:
+	print('## Potential issues')
+	print('\n'.join(f'* {x}' for x in potential_issues))
+
+	if os.getenv('GITHUB_OUTPUT'):
+		with open(os.getenv('GITHUB_OUTPUT'), 'a') as file:
+			file.write('has_issues=YES\n')
