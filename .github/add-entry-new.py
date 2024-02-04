@@ -217,13 +217,6 @@ Accepted by: [{comment_author}](https://github.com/{comment_author})'''
 	}
 	request.urlopen(req, data=json.dumps(data).encode('utf-8'))
 
-try:
-	if os.getenv('VERIFY_USER_RESULT') == 'YES':
-		send_webhook(mod_id, old_version=old_version, new_version=mod_version)
-except:
-	# dont care about webhook failing
-	pass
-
 print(f'''## Info:
 * Mod ID: `{mod_id}`
 * Version: `{mod_version}`
@@ -261,3 +254,11 @@ if potential_issues:
 	if os.getenv('GITHUB_OUTPUT'):
 		with open(os.getenv('GITHUB_OUTPUT'), 'a') as file:
 			file.write('has_issues=YES\n')
+else:
+	# mod only gets auto accepted when there are no issues
+	try:
+		if os.getenv('VERIFY_USER_RESULT') == 'YES':
+			send_webhook(mod_id, old_version=old_version, new_version=mod_version)
+	except:
+		# dont care about webhook failing
+		pass
