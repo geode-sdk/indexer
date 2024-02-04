@@ -228,6 +228,7 @@ print(f'''## Info:
 * Mod ID: `{mod_id}`
 * Version: `{mod_version}`
 * Targetting GD: `{mod_json['gd']}`
+* Actual platforms: `{mod_platforms}`
 * Targetting Geode: `{mod_json['geode']}`
 ''')
 
