@@ -254,11 +254,13 @@ if potential_issues:
 	if os.getenv('GITHUB_OUTPUT'):
 		with open(os.getenv('GITHUB_OUTPUT'), 'a') as file:
 			file.write('has_issues=YES\n')
-else:
-	# mod only gets auto accepted when there are no issues
-	try:
-		if os.getenv('VERIFY_USER_RESULT') == 'YES':
-			send_webhook(mod_id, old_version=old_version, new_version=mod_version)
-	except:
-		# dont care about webhook failing
-		pass
+
+
+# mod only gets auto accepted when there are no issues
+try:
+	# ignore potential issues if this is triggered by a staff !accept command
+	if (os.getenv('ACTUALLY_ACCEPTING') == 'YES' or not potential_issues) and os.getenv('VERIFY_USER_RESULT') == 'YES':
+		send_webhook(mod_id, old_version=old_version, new_version=mod_version)
+except:
+	# dont care about webhook failing
+	pass

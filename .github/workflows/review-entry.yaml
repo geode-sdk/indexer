@@ -58,6 +58,7 @@ jobs:
         ISSUE_BODY: ${{ github.event.issue.body }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         VERIFY_USER_RESULT: ${{ steps.verify_user.outputs.result }}
+        ACTUALLY_ACCEPTING: YES
 
     - name: Push to index
       shell: bash
