@@ -49,7 +49,7 @@ jobs:
         set -e
 
         echo "any silly errors?"
-        if [ -f silly_log.txt]; then
+        if [ -f silly_log.txt ]; then
           cat silly_log.txt
         fi
 
