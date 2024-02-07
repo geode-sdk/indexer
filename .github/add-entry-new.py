@@ -207,7 +207,6 @@ Accepted by: [{comment_author}](https://github.com/{comment_author})'''
 			}
 		}
 	]
-	print(f"why wont you work embeds={embeds!r}")
 
 	req = request.Request(os.getenv('DISCORD_WEBHOOK_URL'), method='POST')
 	req.add_header('User-Agent', 'python urllib')

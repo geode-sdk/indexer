@@ -77,7 +77,7 @@ jobs:
         git add -A
         git commit -m "Update from $ISSUE_AUTHOR"
         git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
-        # git push -u origin main || true
+        git push -u origin main || true
     
     - name: Close Issue
       uses: peter-evans/close-issue@v3
