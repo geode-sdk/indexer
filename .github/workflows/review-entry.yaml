@@ -48,6 +48,8 @@ jobs:
         RESULT=$?
         set -e
 
+        echo result.txt
+
         echo "any silly errors?"
         if [ -f silly_log.txt ]; then
           cat silly_log.txt
