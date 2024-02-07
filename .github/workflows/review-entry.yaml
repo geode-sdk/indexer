@@ -48,6 +48,11 @@ jobs:
         RESULT=$?
         set -e
 
+        echo "any silly errors?"
+        if [ -f silly_log.txt]; then
+          cat silly_log.txt
+        fi
+
         if [ $RESULT -eq 0 ]; then
           echo push_entry=YES >> $GITHUB_OUTPUT
         else

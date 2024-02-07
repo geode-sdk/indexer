@@ -261,6 +261,10 @@ try:
 	# ignore potential issues if this is triggered by a staff !accept command
 	if (os.getenv('ACTUALLY_ACCEPTING') == 'YES' or not potential_issues) and os.getenv('VERIFY_USER_RESULT') == 'YES':
 		send_webhook(mod_id, old_version=old_version, new_version=mod_version)
-except:
+	else:
+		with open('silly_log.txt', 'a') as file:
+			file.write("not sending webhook :P\n")
+except Exception as e:
 	# dont care about webhook failing
-	pass
+	with open('silly_log.txt', 'a') as file:
+		file.write(str(e) + "\n")

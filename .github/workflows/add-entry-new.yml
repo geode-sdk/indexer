@@ -44,6 +44,11 @@ jobs:
           echo "output is"
           cat result.txt
 
+          echo "any silly errors?"
+          if [ -f silly_log.txt]; then
+            cat silly_log.txt
+          fi
+
           EOF=$(openssl rand -hex 8)
 
           {
