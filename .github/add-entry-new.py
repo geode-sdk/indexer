@@ -55,7 +55,7 @@ except Exception as inst:
 # check for valid mod id
 # TODO: this allows uppercase letters, but fod doesnt like em
 MOD_ID_PATTERN = r'^[\w\-]+\.[\w\-]+$'
-if not re.match(MOD_ID_PATTERN, mod_id):
+if len(mod_id) > 64 or not re.match(MOD_ID_PATTERN, mod_id):
 	fail(f'Invalid Mod ID: {mod_id}. Must follow this regex: [\w\-]+\.[\w\-]+')
 
 
