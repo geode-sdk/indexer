@@ -52,6 +52,12 @@ try:
 except Exception as inst:
 	fail(f'Not a valid geode file: {inst}')
 
+# check for valid mod id
+# TODO: this allows uppercase letters, but fod doesnt like em
+MOD_ID_PATTERN = r'^[\w\-]+\.[\w\-]+$'
+if not re.match(MOD_ID_PATTERN, mod_id):
+	fail(f'Invalid Mod ID: {mod_id}. Must follow this regex: [\w\-]+\.[\w\-]+')
+
 
 # Populate entry.json
 try:
@@ -268,3 +274,7 @@ except Exception as e:
 	# dont care about webhook failing
 	with open('silly_log.txt', 'a') as file:
 		file.write(str(e) + "\n")
+
+if os.getenv('GITHUB_OUTPUT'):
+	with open(os.getenv('GITHUB_OUTPUT'), 'a') as file:
+		file.write(f'mod_id={mod_id}\n')

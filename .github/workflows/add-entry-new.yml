@@ -84,9 +84,9 @@ jobs:
           git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
           git config --local user.name "GeodeBot"
           git add -A
-          git commit -m "Update from $ISSUE_AUTHOR"
+          git commit -m "Update from $ISSUE_AUTHOR - ${{ steps.add_entry.outputs.mod_id }}"
           git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
-          git push -u origin main || true
+          git push -u origin main
         env:
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
       
