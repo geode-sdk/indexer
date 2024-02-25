@@ -226,16 +226,16 @@ Accepted by: [{comment_author}](https://github.com/{comment_author})'''
 print(f'''## Info:
 * Mod ID: `{mod_id}`
 * Version: `{mod_version}`
-* Targetting GD: `{mod_json['gd']}`
+* Targeting GD: `{mod_json['gd']}`
 * Actual platforms: `{mod_platforms}`
-* Targetting Geode: `{mod_json['geode']}`
+* Targeting Geode: `{mod_json['geode']}`
 ''')
 
 potential_issues = []
 if old_version == mod_version:
 	potential_issues.append(f'Replacing an existing version `{mod_version}`')
 if mod_json['gd'] == '*':
-	potential_issues.append(f'Targetting *any* GD version, make sure you really support that.')
+	potential_issues.append(f'Targeting *any* GD version, make sure you really support that.')
 
 def check_bad_about():
 	if not (mod_directory / 'about.md').exists():
