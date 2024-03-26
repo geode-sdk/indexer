@@ -45,6 +45,7 @@ try:
 	archive = zipfile.ZipFile('mod.geode', 'r')
 	mod_json = json.loads(archive.read('mod.json'))
 	mod_id = mod_json['id']
+	mod_name = mod_json.get('name', mod_id)
 	mod_version = mod_json['version'].replace('v', '')
 
 	file_list = archive.namelist()	
@@ -180,7 +181,7 @@ try:
 except Exception as inst:
 	fail(f'Could not populate mod folder {version_mod_directory}: {inst}')
 
-def send_webhook(mod_id, new_version, old_version=None):
+def send_webhook(mod_id, mod_name, new_version, old_version=None):
 	from urllib import request
 	import json
 	import os
@@ -196,12 +197,12 @@ Uploaded by: [{issue_author}](https://github.com/{issue_author})
 Accepted by: [{comment_author}](https://github.com/{comment_author})'''
 
 	if new_version == old_version:
-		title = f'Replaced? `{mod_id}` {new_version}'
+		title = f'Replaced? {mod_name} {new_version}'
 	elif old_version is None:
-		title = f'Added `{mod_id}` {new_version}'
+		title = f'Added {mod_name} {new_version}'
 		description = 'New mod!\n' + description
 	else:
-		title = f'Updated `{mod_id}` {old_version} -> {new_version}'
+		title = f'Updated {mod_name} {old_version} -> {new_version}'
 
 	embeds = [
 		{
@@ -266,7 +267,7 @@ if potential_issues:
 try:
 	# ignore potential issues if this is triggered by a staff !accept command
 	if (os.getenv('ACTUALLY_ACCEPTING') == 'YES' or not potential_issues) and os.getenv('VERIFY_USER_RESULT') == 'YES':
-		send_webhook(mod_id, old_version=old_version, new_version=mod_version)
+		send_webhook(mod_id, mod_name, old_version=old_version, new_version=mod_version)
 	else:
 		with open('silly_log.txt', 'a') as file:
 			file.write("not sending webhook :P\n")
