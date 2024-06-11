@@ -1,0 +1,31 @@
+name: Add/Update an entry
+description: Add/update an entry to/from the Geode index.
+labels: []
+body: 
+  - type: markdown
+    attributes:
+      value: "## Geode index entry"
+  - type: input
+    id: entry
+    attributes:
+      label: Your mod link
+      description: Add a link to your .geode file which can be downloaded directly.
+      placeholder: "https://github.com/<user>/<repo>/releases/download/<tag>/<mod>.geode"
+    validations:
+      required: true
+  - type: input
+    id: source-code
+    attributes:
+      label: Your mod source code
+      description: Add a link to the source code of your mod. Required for not verified users.
+      placeholder: "https://github.com/<user>/<repo>"
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Your mod description
+      description: If you want to shortly explain what your mod does you can do it here.
+      placeholder: "My mod removes the creator layer from the game, making you unable to play."
+    validations:
+      required: false

@@ -1,0 +1,87 @@
+name: Review Entry
+
+on:
+  issue_comment:
+    types: [created]
+
+env:
+  PR_AUTHOR: ${{ github.event.issue.user.login }}
+  ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+  COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+
+jobs:
+  check_issues:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+      verified: ${{ steps.verify.outputs.verify }}
+
+    if: ${{ !github.event.issue.pull_request }}
+
+    steps:        
+    - name: Checkout Indexer
+      uses: actions/checkout@v3
+      with:
+        path: code
+
+    - name: Checkout Index
+      uses: actions/checkout@v3
+      with:
+        repository: geode-sdk/mods
+        path: index
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+
+    - name: Verify User
+      id: verify_user
+      shell: bash
+      run: |
+        echo result=`python3 code/.github/verify-staff.py index $COMMENT_AUTHOR` >> $GITHUB_OUTPUT
+
+    - name: Add Entry
+      if: steps.verify_user.outputs.result == 'YES' && github.event.comment.body == '!accept'
+      id: add_entry
+      shell: bash
+      run: |
+
+        set +e
+        python3 code/.github/add-entry-new.py index $ISSUE_AUTHOR >> result.txt
+        RESULT=$?
+        set -e
+
+        cat result.txt
+
+        echo "any silly errors?"
+        if [ -f silly_log.txt ]; then
+          cat silly_log.txt
+        fi
+
+        if [ $RESULT -eq 0 ]; then
+          echo push_entry=YES >> $GITHUB_OUTPUT
+        else
+          echo push_entry=NO >> $GITHUB_OUTPUT
+        fi
+
+      env:
+        ISSUE_BODY: ${{ github.event.issue.body }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        VERIFY_USER_RESULT: ${{ steps.verify_user.outputs.result }}
+        ACTUALLY_ACCEPTING: YES
+
+    - name: Push to index
+      shell: bash
+      if: steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.push_entry == 'YES' && github.event.comment.body == '!accept'
+      working-directory: ${{ github.workspace }}/index
+      run: |
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
+        git add -A
+        git commit -m "Update from $ISSUE_AUTHOR - ${{ steps.add_entry.outputs.mod_id }}" -m "Accepted by: $COMMENT_AUTHOR"
+        git remote set-url origin "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/mods.git"
+        git push -u origin main
+    
+    - name: Close Issue
+      uses: peter-evans/close-issue@v3
+      if: steps.verify_user.outputs.result == 'YES' && steps.add_entry.outputs.push_entry == 'YES' && github.event.comment.body == '!accept'
+      with:
+        issue-number: ${{ github.event.issue.number }}
+        comment: Successfully added the mod!      
